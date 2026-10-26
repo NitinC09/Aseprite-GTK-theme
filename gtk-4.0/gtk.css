@@ -1,0 +1,2066 @@
+/* =========================================================================
+ * Aseprite — GTK 4 theme
+ *
+ * A port of the Aseprite GTK 3 / xfwm4 theme to GTK 4.
+ *
+ * GTK 4 always draws client-side decorations (CSD) on Wayland, so the
+ * headerbar and window buttons below reproduce the xfwm4 titlebar pixel for
+ * pixel. That keeps GTK 4 windows looking the same under xfwm4 (X11) and
+ * under Wayland compositors such as niri, Sway, Hyprland, labwc or wayfire.
+ *
+ * Tested against GTK 4.14+. Uses @define-color rather than CSS variables so
+ * it keeps working on GTK releases older than 4.16.
+ * ========================================================================= */
+
+/* ---------- Palette (taken from the gtk-3.0 theme and xfwm4 pixmaps) ---- */
+@define-color ase_bg          #e7dcc5;  /* window background, cream         */
+@define-color ase_bg_dark     #9e896d;  /* beige shadow                     */
+@define-color ase_face        #d7d0c2;  /* button face                      */
+@define-color ase_hi          #ffffff;  /* bevel highlight                  */
+@define-color ase_lo          #7c7c7c;  /* bevel shadow                     */
+@define-color ase_ink         #000000;  /* outlines and text                */
+@define-color ase_blue        #7c919d;  /* titlebar / active blue-grey      */
+@define-color ase_blue_hi     #adcade;  /* blue highlight                   */
+@define-color ase_blue_lo     #645460;  /* blue shadow (plum)               */
+@define-color ase_focus       #786050;  /* focus ring                       */
+@define-color ase_sel         #c8603a;  /* selection apricot (Horizon/Cat.) */
+@define-color ase_tip         #ffff7d;  /* tooltip yellow                   */
+@define-color ase_base        #fffcf5;  /* entries / views                  */
+@define-color ase_disabled_fg #606060;
+@define-color ase_disabled_bg #b6b6b6;
+@define-color ase_link        #1d72e9;
+@define-color ase_link_visited #175bba;
+/* roles that share a colour in the light theme but not in the dark one */
+@define-color ase_fg          #000000;  /* text (outlines use ase_ink)      */
+@define-color ase_sel_fg      #ffffff;  /* text on selected / blue items    */
+@define-color ase_panel       #d8caae;  /* menu bars, toolbars, status bars */
+@define-color ase_face_hover  #e9e3d7;
+@define-color ase_disabled_hi #d6d6d6;  /* bevel on disabled buttons        */
+@define-color ase_checked_hover #f2f2f2;
+@define-color ase_checked_disabled #a4a4a4;
+@define-color ase_card_hover  #f9f3e5;
+@define-color ase_title       #7d929e;  /* titlebar (from xfwm4)            */
+@define-color ase_title_hi    #adcade;  /* titlebar highlight               */
+@define-color ase_title_backdrop #e9dfcc; /* unfocused titlebar             */
+@define-color ase_blue_hover  #8aa0ad;
+@define-color ase_menu_disabled_fg #9e896d;  /* greyed-out menu items */
+@define-color ase_focus_ring  #7c919d;  /* keyboard focus ring (quiet blue-grey) */
+@define-color ase_check_outline #9e896d;     /* unchecked checkbox outline */
+@define-color ase_check_outline_off #7c7c7c; /* ... when greyed out       */
+@define-color ase_check_fill  transparent;   /* ... inside                 */
+
+/* Named colours GTK 4 widgets and many apps look up. */
+@define-color theme_fg_color             #000000;
+@define-color theme_text_color           #000000;
+@define-color theme_bg_color             #e7dcc5;
+@define-color theme_base_color           #fffcf5;
+@define-color theme_selected_bg_color    #c8603a;
+@define-color theme_selected_fg_color    #ffffff;
+@define-color insensitive_bg_color       #b6b6b6;
+@define-color insensitive_fg_color       #606060;
+@define-color insensitive_base_color     #e6e6e6;
+@define-color theme_unfocused_fg_color   #000000;
+@define-color theme_unfocused_text_color #000000;
+@define-color theme_unfocused_bg_color   #e7dcc5;
+@define-color theme_unfocused_base_color #fffcf5;
+@define-color theme_unfocused_selected_bg_color #c8603a;
+@define-color theme_unfocused_selected_fg_color #ffffff;
+@define-color unfocused_insensitive_color #606060;
+@define-color borders            #000000;
+@define-color unfocused_borders  #000000;
+@define-color warning_color      #ff8300;
+@define-color error_color        #cc0000;
+@define-color success_color      #2e9e5e;
+@define-color content_view_bg    #fffcf5;
+
+/* libadwaita-style names, so apps that reference them still match. */
+@define-color accent_color          #a54a28;
+@define-color accent_bg_color       #c8603a;
+@define-color accent_fg_color       #ffffff;
+@define-color destructive_color     #cc0000;
+@define-color destructive_bg_color  #ff0000;
+@define-color destructive_fg_color  #ffffff;
+@define-color success_bg_color      #2e9e5e;
+@define-color success_fg_color      #ffffff;
+@define-color warning_bg_color      #ff8300;
+@define-color warning_fg_color      #ffffff;
+@define-color error_bg_color        #ff0000;
+@define-color error_fg_color        #ffffff;
+@define-color window_bg_color       #e7dcc5;
+@define-color window_fg_color       #000000;
+@define-color view_bg_color         #fffcf5;
+@define-color view_fg_color         #000000;
+@define-color headerbar_bg_color    #7d929e;
+@define-color headerbar_fg_color    #ffffff;
+@define-color headerbar_border_color #000000;
+@define-color headerbar_backdrop_color #e9dfcc;
+@define-color headerbar_shade_color #000000;
+@define-color card_bg_color         #fffcf5;
+@define-color card_fg_color         #000000;
+@define-color card_shade_color      #000000;
+@define-color dialog_bg_color       #e7dcc5;
+@define-color dialog_fg_color       #000000;
+@define-color popover_bg_color      #e7dcc5;
+@define-color popover_fg_color      #000000;
+@define-color sidebar_bg_color      #e7dcc5;
+@define-color sidebar_fg_color      #000000;
+@define-color shade_color           rgba(0, 0, 0, 0.3);
+@define-color scrollbar_outline_color #000000;
+
+
+/* =========================================================================
+ * Base
+ * ========================================================================= */
+* {
+  padding: 0;
+  outline-style: solid;
+  outline-width: 2px;
+  outline-color: transparent;
+  outline-offset: -4px;
+  -gtk-secondary-caret-color: @ase_focus;
+}
+
+/* Focus ring only for keyboard focus, like the GTK 3 theme's dotted brown. */
+/* Only the focused widget itself (:focus). While keyboard focus is shown,
+   GTK also marks every container around it :focus-visible (the window,
+   panes, lists), which would outline all of them for a few seconds. */
+*:focus:focus-visible {
+  outline-color: @ase_focus_ring;
+}
+/* ...but not around whole content areas (a list, file view or text area
+   that has focus itself): that just outlines the entire view. Rows,
+   buttons and other small controls keep their ring. */
+listview:focus:focus-visible, columnview:focus:focus-visible,
+gridview:focus:focus-visible, list:focus:focus-visible,
+treeview:focus:focus-visible, iconview:focus:focus-visible,
+flowbox:focus:focus-visible, textview:focus:focus-visible,
+textview > text:focus:focus-visible, scrolledwindow:focus:focus-visible,
+viewport:focus:focus-visible, placessidebar:focus:focus-visible,
+columnview > listview:focus:focus-visible {
+  outline-color: transparent;
+}
+
+/* Only .background paints the window. Apps that want a see-through
+   window (Ghostty and other terminals with background opacity, launchers,
+   overlays) remove that class — the GTK convention — so painting the bare
+   window node would make them solid. */
+/* Square window corners everywhere (libadwaita rounds them by 15px,
+   also on server-side decorated windows). */
+window { color: @ase_fg; border-radius: 0; }
+.background {
+  color: @ase_fg;
+  background-color: @ase_bg;
+}
+
+.view, view, textview > text, iconview, .content-view {
+  color: @ase_fg;
+  background-color: @ase_base;
+}
+
+label { caret-color: currentColor; }
+label:disabled, .dim-label, label.separator { opacity: 0.55; }
+label.title { font-weight: bold; }
+label.heading, .heading { font-weight: bold; }
+label.title-1 { font-weight: 800; font-size: 20pt; }
+label.title-2 { font-weight: 800; font-size: 15pt; }
+label.title-3 { font-weight: 700; font-size: 15pt; }
+label.title-4 { font-weight: 700; font-size: 13pt; }
+.caption { font-size: smaller; }
+.caption-heading { font-size: smaller; font-weight: bold; }
+.monospace { font-family: monospace; }
+.numeric { font-feature-settings: "tnum"; }
+
+label > selection,
+text > selection,
+textview > text > selection,
+entry > text > selection,
+.view > selection {
+  color: @ase_sel_fg;
+  background-color: @ase_sel;
+}
+
+*:disabled { -gtk-icon-filter: opacity(0.5); }
+
+image { -gtk-icon-style: requested; }
+
+/* Links */
+*:link, button.link:link, button.link > label:link {
+  color: @ase_link;
+}
+*:link:visited, button.link:visited, button.link > label:visited {
+  color: @ase_link_visited;
+}
+*:link:hover { color: #2c7ff4; }
+button.link {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+button.link > label { text-decoration-line: underline; }
+
+/* Drag and drop highlight */
+:drop(active):not(window) {
+  box-shadow: inset 0 0 0 2px @ase_focus;
+}
+
+.dnd { border: 2px solid @ase_ink; }
+
+/* Rubberband selection (file chooser, icon views) */
+rubberband, .rubberband {
+  border: 2px solid @ase_ink;
+  background-color: alpha(@ase_sel, 0.3);
+}
+
+
+/* =========================================================================
+ * Buttons
+ *
+ * The Aseprite button: grey face, 2px white bevel on top/left/right,
+ * white + grey on the bottom, and a 2px black outline drawn as four
+ * offset outer shadows. The shadows don't cover the corners, which gives
+ * the notched "pixel-rounded" corners of the Aseprite UI.
+ * ========================================================================= */
+button {
+  min-height: 20px;
+  min-width: 16px;
+  padding: 4px 8px;
+  margin: 2px;
+  border: none;
+  border-radius: 0;
+  color: @ase_fg;
+  background-color: @ase_face;
+  background-image: none;
+  box-shadow:
+    inset 0 -4px @ase_hi,
+    inset 0 -2px @ase_lo,
+    inset 2px 0 @ase_hi,
+    inset -2px 0 @ase_hi,
+    inset 0 2px @ase_hi,
+    0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+
+button:hover {
+  background-color: @ase_face_hover;
+}
+
+/* pressed: Aseprite turns the face blue-grey with white text */
+button:active {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow:
+    inset 0 2px @ase_blue_lo,
+    inset 2px 0 @ase_blue_lo,
+    inset 0 -2px @ase_blue_hi,
+    inset -2px 0 @ase_blue_hi,
+    0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+
+/* toggled: a flat white face, sunken */
+button:checked {
+  color: @ase_fg;
+  background-color: @ase_hi;
+  box-shadow:
+    inset 0 -2px @ase_face,
+    0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+button:checked:hover { background-color: @ase_checked_hover; }
+button:checked:active {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+
+button:disabled {
+  color: @ase_disabled_fg;
+  background-color: @ase_disabled_bg;
+  box-shadow:
+    inset 0 -4px @ase_disabled_hi,
+    inset 0 -2px @ase_lo,
+    inset 2px 0 @ase_disabled_hi,
+    inset -2px 0 @ase_disabled_hi,
+    inset 0 2px @ase_disabled_hi,
+    0 -2px @ase_lo, 0 2px @ase_lo, -2px 0 @ase_lo, 2px 0 @ase_lo;
+}
+button:checked:disabled {
+  color: @ase_disabled_fg;
+  background-color: @ase_checked_disabled;
+  box-shadow: 0 -2px @ase_lo, 0 2px @ase_lo, -2px 0 @ase_lo, 2px 0 @ase_lo;
+}
+
+button.image-button { min-width: 20px; padding: 4px; }
+button.text-button.image-button,
+button.image-text-button { padding: 4px 8px; }
+button.image-text-button > box { border-spacing: 4px; }
+
+/* Flat buttons: no chrome until hovered, then a translucent white tile. */
+button.flat,
+popover.menu button.flat {
+  background-color: transparent;
+  box-shadow: none;
+}
+button.flat:hover {
+  background-color: alpha(@ase_hi, 0.5);
+  box-shadow: 0 -2px alpha(@ase_hi, 0.5), 0 2px alpha(@ase_hi, 0.5),
+              -2px 0 alpha(@ase_hi, 0.5), 2px 0 alpha(@ase_hi, 0.5);
+}
+button.flat:active {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow: 0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+button.flat:checked {
+  color: @ase_fg;
+  background-color: @ase_hi;
+  box-shadow: 0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+button.flat:disabled {
+  color: alpha(@ase_fg, 0.5);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Suggested and destructive actions keep the bevel, change the face. */
+button.suggested-action {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow:
+    inset 0 -4px @ase_blue_hi,
+    inset 0 -2px @ase_blue_lo,
+    inset 2px 0 @ase_blue_hi,
+    inset -2px 0 @ase_blue_hi,
+    inset 0 2px @ase_blue_hi,
+    0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+button.suggested-action:hover { background-color: @ase_blue_hover; }
+button.suggested-action:active { background-color: @ase_blue_lo; }
+
+button.destructive-action {
+  color: @ase_sel_fg;
+  background-color: #e02020;
+  box-shadow:
+    inset 0 -4px #ff8080,
+    inset 0 -2px #8f0000,
+    inset 2px 0 #ff8080,
+    inset -2px 0 #ff8080,
+    inset 0 2px #ff8080,
+    0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+button.destructive-action:hover { background-color: #f03a3a; }
+button.destructive-action:active { background-color: #b80000; }
+
+button.suggested-action:disabled,
+button.destructive-action:disabled {
+  color: @ase_disabled_fg;
+  background-color: @ase_disabled_bg;
+}
+
+button.circular,
+button.osd.circular {
+  min-width: 20px;
+  min-height: 20px;
+  padding: 4px;
+  border-radius: 9999px;
+  box-shadow: inset 0 -2px @ase_lo, 0 0 0 2px @ase_ink;
+}
+button.circular:checked,
+button.circular:active { box-shadow: 0 0 0 2px @ase_ink; }
+
+button.pill { padding: 8px 28px; }
+
+button.opaque {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+
+/* Linked groups: leave a 2px seam so neighbouring outlines line up. */
+.linked:not(.vertical) > button:not(:first-child),
+.linked:not(.vertical) > menubutton:not(:first-child),
+.linked:not(.vertical) > dropdown:not(:first-child),
+.linked:not(.vertical) > entry:not(:first-child),
+.linked:not(.vertical) > spinbutton:not(:first-child),
+.linked:not(.vertical) > splitbutton:not(:first-child),
+.linked:not(.vertical) > colorbutton:not(:first-child),
+.linked:not(.vertical) > fontbutton:not(:first-child) {
+  margin-left: 0;
+}
+.linked.vertical > button:not(:first-child),
+.linked.vertical > entry:not(:first-child) {
+  margin-top: 0;
+}
+
+/* Wrapper widgets: the inner button carries the margin, not the wrapper. */
+menubutton, dropdown, colorbutton, fontbutton, appchooserbutton,
+splitbutton, scalebutton, volumebutton, linkbutton {
+  padding: 0;
+  margin: 0;
+}
+splitbutton > button:first-child { margin-right: 0; }
+splitbutton > menubutton > button { padding-left: 4px; padding-right: 4px; }
+splitbutton > separator { min-width: 0; background: none; }
+
+menubutton > button > box,
+dropdown > button > box { border-spacing: 6px; }
+
+menubutton.flat > button,
+menubutton > button.flat { background: transparent; box-shadow: none; }
+menubutton.flat > button:hover { background-color: alpha(@ase_hi, 0.5); }
+menubutton.flat > button:checked,
+menubutton > button.flat:checked {
+  background-color: @ase_hi;
+  box-shadow: 0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+
+/* Arrow / expander icons */
+arrow {
+  min-width: 16px;
+  min-height: 16px;
+  -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+}
+arrow.none { -gtk-icon-source: none; }
+arrow.up { -gtk-icon-source: -gtk-icontheme("pan-up-symbolic"); }
+arrow.left { -gtk-icon-source: -gtk-icontheme("pan-start-symbolic"); }
+arrow.right { -gtk-icon-source: -gtk-icontheme("pan-end-symbolic"); }
+
+button.color { padding: 4px; }
+button.color colorswatch {
+  min-width: 24px;
+  min-height: 16px;
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+
+
+/* =========================================================================
+ * Check and radio buttons — reuses the GTK 3 pixel-art images
+ * ========================================================================= */
+checkbutton {
+  padding: 2px;
+  border-spacing: 4px;
+  border-radius: 0;
+}
+checkbutton.text-button { padding: 2px 4px; }
+checkbutton:focus-visible { outline-offset: 0; }
+
+check, radio {
+  border-radius: 0;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  -gtk-icon-size: 16px;
+}
+
+/* BEGIN generated: check and radio images (tools/build_dark.py from tools/toggles.template.css) */
+check {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAP0lEQVR4nGNkgIJ5nbn/GYgASeWTGZH5TMRowgdYYDYnlk1iJKQYCv4ju4RiF4waMGoAAwMDAzz1DVheGHgAAANLDobKjQdUAAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAVklEQVR4nGNkQAPzOnP/o4tRApLKJzPik2eipmXkgFEHsKDHeWLZJLxxRgZAMR89TQx4CIw6YNQBow4YdcCoA0YdMOqAUQeMOgCj/TfaLxhxDhgFowAAnpsOolqeR8oAAAAASUVORK5CYII="));
+}
+check:backdrop {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAP0lEQVR4nGNkgIJ5nbn/GYgASeWTGZH5TMRowgdYYDYnlk1iJKQYCv4ju4RiF4waMGoAAwMDAzz1DVheGHgAAANLDobKjQdUAAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAVklEQVR4nGNkQAPzOnP/o4tRApLKJzPik2eipmXkgFEHsKDHeWLZJLxxRgZAMR89TQx4CIw6YNQBow4YdcCoA0YdMOqAUQeMOgCj/TfaLxhxDhgFowAAnpsOolqeR8oAAAAASUVORK5CYII="));
+}
+check:checked {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAj0lEQVR4nMWSMQ6DMAxFnxHX6FqJY8FOx3IGOsIOx0Lq2oOYhV8pESAGS7wpUZy8LzvGxtS3zgWabtTSAIorl84wmev3YKeFZg7g7toTkqDcMSRJjsxT38YkMGDXII7MTTfGTKHUizLI+I+YmXPipqDuq+tCZv2T+fNKzkOmIJMDfJdfUvCsHsle3Q9LcD8r69U2czTylOsAAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAs0lEQVR4nO2WMQ7CMAxFY9RrsFbiWHQvY3uGMtK9HAuJlYOEtXktKQEkM/y32WncL//IiQUwDW1k7huafmTK5sHulz/7BAkwen7sLvbq47cKmiX1YoxcT2L3DkhAxcSKh9kzUer5NLRJ7N4BCbAQQpGHpNTzph91F/yXgIoe0UN6TLY838K9AxKwuAs4+znrCT3ne+J6PmX3u3dAAhaDnm/E++2RLVAf9tl1zn7i3gEJEOIJ2Rg2jy5/Q/0AAAAASUVORK5CYII="));
+}
+check:checked:backdrop {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAj0lEQVR4nMWSMQ6DMAxFnxHX6FqJY8FOx3IGOsIOx0Lq2oOYhV8pESAGS7wpUZy8LzvGxtS3zgWabtTSAIorl84wmev3YKeFZg7g7toTkqDcMSRJjsxT38YkMGDXII7MTTfGTKHUizLI+I+YmXPipqDuq+tCZv2T+fNKzkOmIJMDfJdfUvCsHsle3Q9LcD8r69U2czTylOsAAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAs0lEQVR4nO2WMQ7CMAxFY9RrsFbiWHQvY3uGMtK9HAuJlYOEtXktKQEkM/y32WncL//IiQUwDW1k7huafmTK5sHulz/7BAkwen7sLvbq47cKmiX1YoxcT2L3DkhAxcSKh9kzUer5NLRJ7N4BCbAQQpGHpNTzph91F/yXgIoe0UN6TLY838K9AxKwuAs4+znrCT3ne+J6PmX3u3dAAhaDnm/E++2RLVAf9tl1zn7i3gEJEOIJ2Rg2jy5/Q/0AAAAASUVORK5CYII="));
+}
+check:indeterminate {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAT0lEQVR4nGNkgIJ5nbn/GYgASeWTGZH5TMRowgdYYDYnlk1iJKQYCv4ju4RiFwy8ASwwxvyuPKJigXYuIDYW0F068IFIsQFwfw9YXhh4AAARBBUgBI8PpwAAAABJRU5ErkJggg=="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAaklEQVR4nGNkQAPzOnP/o4tRApLKJzPik2eipmXkgFEHsKDHeWLZJLxxRgZAMR89TQx4CIw6YNQBow5gQReY35VH1bqAEBjwEBh1AEYaoHZdQChNDXgIjDpg1AGjDsDI86P9ghHngFEwCgDMuRU8gxeT9gAAAABJRU5ErkJggg=="));
+}
+check:indeterminate:backdrop {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAT0lEQVR4nGNkgIJ5nbn/GYgASeWTGZH5TMRowgdYYDYnlk1iJKQYCv4ju4RiFwy8ASwwxvyuPKJigXYuIDYW0F068IFIsQFwfw9YXhh4AAARBBUgBI8PpwAAAABJRU5ErkJggg=="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAaklEQVR4nGNkQAPzOnP/o4tRApLKJzPik2eipmXkgFEHsKDHeWLZJLxxRgZAMR89TQx4CIw6YNQBow5gQReY35VH1bqAEBjwEBh1AEYaoHZdQChNDXgIjDpg1AGjDsDI86P9ghHngFEwCgDMuRU8gxeT9gAAAABJRU5ErkJggg=="));
+}
+check:disabled {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAADdJREFUKJFjZICCmpqa/wxEgJaWFkYGBgYGJmIUYwMsMJuam5sZidTznyIbRzUOD43w1EK3tAoArFgNGVzpycYAAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAAXNSR0IArs4c6QAAAE5JREFUSIljZEADNTU1/9HFKAEtLS2MyHwmahpODBj+FrKgx1lzczMjbuVkARTzh3+Qjlo4auGohaMWjlo4auGohQNgIUb7ZbRdOuQsBAC7dg01F/BZngAAAABJRU5ErkJggg=="));
+}
+check:checked:disabled {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAhElEQVR4nMWTuw3DMAwFj4GXcZcJMhlViZNlgnQZh2nyCgm2ISAEcpUAfe6BpIwv7p4sEBFaGsBt5dIVJnPv3S4PmiXA+/UEYL8/KEmwzYbMHJKcmd29JoEBhwZxZo6Imi5selEGGcVsnqnrgqqvqguZNSettWG/pAsyrf6FYU5+TvB/Phh2M4eG6FN4AAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEjklEQVR4nMWXXXLiOBSFPxkbbFy4IZYJRTYy25iH2Upva7bQj7OLSVWKlAM2uAUFBtvSPKSlJp3QSSpd0/cNStI999zj+wO/2cTnz58BhsA1MAEEYLTWaK1/iRPP8/A8D/s2sAEegL3/7cw18CfwBxAADYAQAmPMh5wLIc5/2rf/Af4G/rUAJt+c/2WMwfM8wjAkCIIPObfWNA1N06C1Pgf05RwAAMYYtNb4vk+apqRpiu/7dF33biaEEPR6Pdq2pSxLlsslbdvied4TVp4A8DwP3/cZDockSUKapoRhiBDiXemwZ40x1HVN0zTsdjsAtNZP3vHtnwBhGJKmKUmS0HUdi8WCNE2RUjL9JCi2r4MQQiBHhuVXQ1EUlGUJwHw+RylFWZbUdf09YAtACEEQBI76xWLBarXCGEMUReQ6+lFQFy3fGA6HA0VRUBQFWZYxm80IggClFIfDAas1lwIbme/7jgljDG3bslgsGI/HXF1d0e/3n9FoI/c8j9PpxHq9pqoq2rZFSulS6fv+E18uBefWdd0jjVISRZFjomka4jjG9/0X02AFfDweWa1WVFVFlmXc3NwQxzFd19F13bN73ksPCSGYfhJEUcR4PGY8HmOMIc9zVqsVbdvS6/WcOK3aV6sVeZ5jjHH3oihi+umyiJ8xYEEU28dLV1dXxHFMnuc8PDyw3++f1QitNXVdk+c52+2W6+trZrMZg8EAIX4u3hcBWBAA/X4f3/dJkoT9fv8Irig4nU4kSQKAUgqlFMYYRqMRSZIQxzGe571aQy4COI/OUhqGIUVRsFwu2e12joX7+3v2+z3T6RQpJWEYOk28Zq8CsOgHgwFBEHA6ndjtdmit2Ww2DqQtXqPR6E2RvxmANRtNkiQEQcBms6EoCgCklEwmE6IoenL2LfbsK/i/7c0MeJ6H1hqlFPf392itkVICUFUVSinm8zlpmroU/BIA9vs9Ho/UdY1Siv1+z3A4ZDKZALj/lFL0+31X9d7SwF4FYCOvqsoVmel0SpIkLue20Wy3W3a7HbPZjCzL3sTERQC28ZxOJ47Ho3MwGo2QUjIajdzZNE3p9/vsdju22y3D4ZDhcMhgMHAV82KAl5zL0WM/X6/X3N7ecjgcXIULw9DOeI6lMAyZzWZcX19zOBy4vb1lvV5jjEGOzEUQzwDYvC2/PrbUqqqoqgohhKP2fEoyxtB1Hb7vu7YrhHD3DocDy6/G9ZhXU9Dr9Vy5LYqCtm3JsozxeMxgMHCauNSOB4MBWZa5onV3d4eUkvF4TK/XuwzAomvblrquKcuSoiiQUnJzc0MUPQ4kl0Rlmej1ekgpieOYu7s7iqJACEEYhrRt+4RlB8Dms2kayrKkaRoAsiwjTVPiOH7/SObFSCldYHmeo5SiaRrXxl8EYBvNfD53guu6jnzz9qHUnrUNLM9z17C01k8E/EQDWmtHk1KKIAh+yVhuC9XpdPr5WG6FpLWmLEuUUu9yesnsUvKj83MAGx7XJYQQgTGmqevaTa8fMZvvb87PV7PNOYAHHne1L3xfID/s3L5xFvWPy+nvt/8Ai//Pcjy8YKkAAAAASUVORK5CYII="));
+}
+check:indeterminate:disabled {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAFFJREFUOI3FU0EKACAIm+Gz9aT/rktFdCghwp0UdE6HhA4RqQjA3WnNS6TpBB6TzYzu5QCAuip5VpBPwCNQ1ZAL/xREXdiV5h/xmWDunfYL+WglhBUgm9HxIQAAAABJRU5ErkJggg=="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAGZJREFUWIXtl8EKwCAIQNfos/Wk/72dZ1BQgoe9dzSwhxpSuwIi8sTYCe7eZud35mU7INBjz81s2rMNPvnjTJRXAAEEEOgxoKqpu2BFeQUQGGYgexesZqq8AggggMDw5vkX/E4A4AU1yBU8RDXlzQAAAABJRU5ErkJggg=="));
+}
+
+radio {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAbUlEQVR4nGNgGGjAiEXsPyl6mKjmgpSQBBSbrUx5URQeO/0ZhT9nzQJGqriABV2guSMVq0LPYAhdWzEbRZxiFwy8AfBY+P///38GBgaG1NBEvBpmr54P0cjISJ1YwEiJMJfg1AC1GQYodsHAAwCDVxazOPWbuQAAAABJRU5ErkJggg=="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAh0lEQVR4nGNgGAUjHTASoeY/Le1gotBwisGoAzDiJyUkAW+cW5ny4jXw2OnPeOXnrFmAYueAh8CoA1gIKWjuSCXJQM9gVH5txWy86gc8BEYdMOqAUQdg1AX///9HqQtSQxMpsmD26vmoFjIyjtYFg8sBBNuE6GmCZAvQ4hwdDHgIjDpgFIwCAHTbFstiUTyHAAAAAElFTkSuQmCC"));
+}
+radio:backdrop {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAbUlEQVR4nGNgGGjAiEXsPyl6mKjmgpSQBBSbrUx5URQeO/0ZhT9nzQJGqriABV2guSMVq0LPYAhdWzEbRZxiFwy8AfBY+P///38GBgaG1NBEvBpmr54P0cjISJ1YwEiJMJfg1AC1GQYodsHAAwCDVxazOPWbuQAAAABJRU5ErkJggg=="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAh0lEQVR4nGNgGAUjHTASoeY/Le1gotBwisGoAzDiJyUkAW+cW5ny4jXw2OnPeOXnrFmAYueAh8CoA1gIKWjuSCXJQM9gVH5txWy86gc8BEYdMOqAUQdg1AX///9HqQtSQxMpsmD26vmoFjIyjtYFg8sBBNuE6GmCZAvQ4hwdDHgIjDpgFIwCAHTbFstiUTyHAAAAAElFTkSuQmCC"));
+}
+radio:checked {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAkklEQVR4nGNkgIJ5nbn/GRgYGJLKJzPgA/M6cxmg6hgZGBgYmPCqJgIwotv8//9/BgYGBoYbFw9j1aBpYIfiEspdwMDA8J+BgYHh+oVDDAwMDAxL1+zCqyE6xA3FJRS7gIWQTTCAy2W0cwGhsKCeC2DxCQtVWGzgAlRPB/AwQHcJLgBTBwNUSYkwk/+TopFquREAhFotQEW6i6sAAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAsklEQVR4nGNkQAPzOnP/I/OTyiejKyEJzOvMReEnlU9mROYzUWQ6FcCoAxgJxfn//yjSDDcuHibJAk0DOxQ+epoY8BAYdQAjAwMDSiRfv3AIRcHSNbsosiA6xA2Fj54mBjwERh3AQqoG9DhFB6SmmQEPgVEHkJwGKC0X0MGAh8CoA1jQ62f0shq9biAVjLYHBr0DMMoBQmmCVIBuHjoY8BAYdQAjugB6P4HaYLRvOOgcAAD2BC1gzR4OpAAAAABJRU5ErkJggg=="));
+}
+radio:checked:backdrop {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAkklEQVR4nGNkgIJ5nbn/GRgYGJLKJzPgA/M6cxmg6hgZGBgYmPCqJgIwotv8//9/BgYGBoYbFw9j1aBpYIfiEspdwMDA8J+BgYHh+oVDDAwMDAxL1+zCqyE6xA3FJRS7gIWQTTCAy2W0cwGhsKCeC2DxCQtVWGzgAlRPB/AwQHcJLgBTBwNUSYkwk/+TopFquREAhFotQEW6i6sAAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAsklEQVR4nGNkQAPzOnP/I/OTyiejKyEJzOvMReEnlU9mROYzUWQ6FcCoAxgJxfn//yjSDDcuHibJAk0DOxQ+epoY8BAYdQAjAwMDSiRfv3AIRcHSNbsosiA6xA2Fj54mBjwERh3AQqoG9DhFB6SmmQEPgVEHkJwGKC0X0MGAh8CoA1jQ62f0shq9biAVjLYHBr0DMMoBQmmCVIBuHjoY8BAYdQAjugB6P4HaYLRvOOgcAAD2BC1gzR4OpAAAAABJRU5ErkJggg=="));
+}
+radio:indeterminate {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAbElEQVR4nGNgGGjAiEXsPyl6mKjmgpSQBBSbrUx5URQeO/0ZhT9nzQJGqriABZcEuo24APVd0NyRildDbcVs6roAHgv/////z8DAwJAamohXw+zV8yEaGRmpEwsYKRHmEpwaoDbDAMUuGHgAALBeGJ1aBLazAAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVR4nGNgGAUjHTASoeY/Le1gotBwisGoAzDiJyUkAW+cW5ny4jXw2OnPeOXnrFmAYueAh8CoA1hI1UAojkkFAx4Cow4gmAaaO1IpsqC2YjZe+QEPgVEHYNQF////R6kLUkMTKbJg9ur5qBYyMo7WBYPLAQTbhOhpgmQL0OIcHQx4CIw6YBSMAgBjmBi1gS8CnwAAAABJRU5ErkJggg=="));
+}
+radio:indeterminate:backdrop {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAbElEQVR4nGNgGGjAiEXsPyl6mKjmgpSQBBSbrUx5URQeO/0ZhT9nzQJGqriABZcEuo24APVd0NyRildDbcVs6roAHgv/////z8DAwJAamohXw+zV8yEaGRmpEwsYKRHmEpwaoDbDAMUuGHgAALBeGJ1aBLazAAAAAElFTkSuQmCC"), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVR4nGNgGAUjHTASoeY/Le1gotBwisGoAzDiJyUkAW+cW5ny4jXw2OnPeOXnrFmAYueAh8CoA1hI1UAojkkFAx4Cow4gmAaaO1IpsqC2YjZe+QEPgVEHYNQF////R6kLUkMTKbJg9ur5qBYyMo7WBYPLAQTbhOhpgmQL0OIcHQx4CIw6YBSMAgBjmBi1gS8CnwAAAABJRU5ErkJggg=="));
+}
+radio:disabled {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZUlEQVR4nGNgGGjAiEXsPyl6mKjmgpqaGhSbo0PcUBQuXbMLhd/S0sJIFRewoAug24wuju4Sil0w8AbAY+H/////GRgYGGpra/FqaG5uhmhkZKROLGCkRJhLcGqA2gwDFLtg4AEAa4IXDAVenf4AAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAf0lEQVR4nGNgGAUjHTASoeY/Le1gotBwisGoAzDip6amBm+cR4e44TVw6ZpdeOVbWlpQ7BzwEBh1AAshBYTinJB6QmliwENg1AGjDhh1AEZd8P//f5S6oLa2liILmpubUS1kZBytCwaXAwi2CdHTBMkWoMU5OhjwEBh1wCgYBQADNRckxdoLhwAAAABJRU5ErkJggg=="));
+}
+radio:checked:disabled {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZUlEQVR4nGNgGGjAiEXsPyl6mKjmgpqaGhSbo0PcUBQuXbMLhd/S0sJIFRewoAug24wuju4Sil0w8AbAY+H/////GRgYGGpra/FqaG5uhmhkZKROLGCkRJhLcGqA2gwDFLtg4AEAa4IXDAVenf4AAAAASUVORK5CYII="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAsUlEQVR4nGNkQAM1NTX/kfktLS3oSkgCNTU1KPyWlhZGZD4TRaZTAYw6gJFQnP//jyLNcOPiYZIs0DSwQ+Gjp4kBD4FRBzAyMDCgRPL1C4dQFCxds4siC6JD3FD46GliwENg1AEspGpAj1N0QGqaGfAQGHUAyWmA0nIBHQx4CIw6gAW9fkYvq9HrBlLBaHtg0DsAoxwglCZIBejmoYMBD4FRBzCiC6D3E6gNRvuGg84BAMWTLMB+LB+OAAAAAElFTkSuQmCC"));
+}
+radio:indeterminate:disabled {
+  -gtk-icon-source: -gtk-scaled(url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZ0lEQVR4nGNgGGjAiEXsPyl6mKjmgpqaGhSbo0PcUBQuXbMLhd/S0sJIFRew4JJAtxEXoL4L0P2ODtBdRr1Y+P///38GBgaG2tpavBqam5shGhkZqRMLGCkR5hKcGqA2wwDFLhh4AACeZxgkzYrPTQAAAABJRU5ErkJggg=="), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAh0lEQVR4nGNgGAUjHTASoeY/Le1gotBwisGoAzDip6amBm+cR4e44TVw6ZpdeOVbWlpQ7BzwEBh1AAupGgjFMalgwENg1AEE0wChfE8IEEozAx4Cow7AqAv+//+PUhfU1tZSZEFzczOqhYyMo3XB4HIAwTYhepog2QK0OEcHAx4Cow4YBaMAAOFzGDwlV0DhAAAAAElFTkSuQmCC"));
+}
+/* END generated */
+
+/* Unchecked boxes are drawn with CSS instead of an image: the same 14px
+   pixel square (2px outline with notched corners, as the PNG), so the box
+   can never go missing if an image fails to load. Checked and mixed states
+   keep their pixel-art images. Same total size (20px) as the image. */
+check:not(:checked):not(:indeterminate),
+check:not(:checked):not(:indeterminate):backdrop {
+  -gtk-icon-source: none;
+  -gtk-icon-size: 10px;
+  min-width: 10px;
+  min-height: 10px;
+  margin: 5px;
+  border: none;
+  border-radius: 0;
+  background-color: @ase_check_fill;
+  box-shadow: 0 -2px @ase_check_outline, 0 2px @ase_check_outline,
+              -2px 0 @ase_check_outline, 2px 0 @ase_check_outline;
+}
+check:not(:checked):not(:indeterminate):disabled {
+  box-shadow: 0 -2px @ase_check_outline_off, 0 2px @ase_check_outline_off,
+              -2px 0 @ase_check_outline_off, 2px 0 @ase_check_outline_off;
+}
+
+
+/* Check/radio buttons that GTK draws as toggle buttons (no indicator) */
+checkbutton.toggle { padding: 0; }
+
+
+/* =========================================================================
+ * Entries, spin buttons, search
+ * ========================================================================= */
+entry, spinbutton, searchbar entry, passwordentry, editablelabel > stack > text {
+  min-height: 24px;
+  margin: 2px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 0;
+  color: @ase_fg;
+  caret-color: currentColor;
+  background-color: @ase_base;
+  box-shadow:
+    inset 0 2px @ase_face,
+    0 -2px @ase_ink, 0 2px @ase_ink, -2px 0 @ase_ink, 2px 0 @ase_ink;
+}
+entry { border-spacing: 6px; }
+entry > text > placeholder { color: alpha(currentColor, 0.5); }
+entry > image { color: alpha(currentColor, 0.75); }
+entry > image:hover { color: currentColor; }
+entry > image.left { margin-right: 2px; }
+entry > image.right { margin-left: 2px; }
+
+/* Text fields get no focus ring: the caret already shows where you type,
+   and a ring on every click into a field was distracting. */
+entry:focus-within, spinbutton:focus-within {
+  outline-color: transparent;
+}
+entry:disabled, spinbutton:disabled {
+  color: @ase_disabled_fg;
+  background-color: @ase_disabled_bg;
+  box-shadow: 0 -2px @ase_lo, 0 2px @ase_lo, -2px 0 @ase_lo, 2px 0 @ase_lo;
+}
+
+entry.error, entry.error:focus-within { color: @error_color; }
+entry.warning { color: @warning_color; }
+entry.success { color: @success_color; }
+
+entry > progress {
+  margin: 0 -6px;
+  border-bottom: 2px solid @ase_sel;
+  background: none;
+}
+
+entry.flat, entry.flat:focus-within {
+  min-height: 0;
+  padding: 2px;
+  background: none;
+  box-shadow: none;
+}
+
+/* Spin buttons */
+spinbutton { padding: 0; border-spacing: 0; }
+spinbutton > text { padding: 0 6px; min-width: 28px; }
+spinbutton > button.image-button,
+spinbutton > button.image-button:hover,
+spinbutton > button.image-button:active,
+spinbutton > button.image-button:disabled {
+  margin: 0;
+  padding: 2px 4px;
+  min-height: 20px;
+}
+spinbutton:not(.vertical) > button.image-button.up { margin-left: 2px; }
+spinbutton:not(.vertical) > button.image-button { box-shadow:
+    inset 0 -2px @ase_lo, inset 0 -4px @ase_hi, inset 2px 0 @ase_hi,
+    inset -2px 0 @ase_hi, inset 0 2px @ase_hi, -2px 0 @ase_ink; }
+spinbutton:not(.vertical) > button.image-button:active { box-shadow: -2px 0 @ase_ink; }
+spinbutton:not(.vertical) > button.image-button:disabled { box-shadow: -2px 0 @ase_lo; }
+spinbutton.vertical > text { min-height: 28px; padding: 0; }
+spinbutton.vertical > button.image-button { margin: 0; }
+
+/* Search bar */
+searchbar > revealer > box {
+  padding: 6px;
+  border-bottom: 2px solid @ase_ink;
+  background-color: @ase_panel;
+  box-shadow: inset 0 2px @ase_hi;
+}
+
+
+/* =========================================================================
+ * Window, headerbar and window controls (client-side decorations)
+ *
+ * Mirrors xfwm4/title-*-active.xpm: 2px black top line, 2px @ase_title_hi
+ * highlight, @ase_title fill, a 4px beige lip, then 2px black.
+ * Unfocused windows switch to the beige / white variant.
+ * ========================================================================= */
+window.csd {
+  /* 2px black frame like xfwm4, plus a soft drop shadow */
+  box-shadow: 0 0 0 2px @ase_ink;
+  margin: 0;
+  border-radius: 0;
+}
+window.csd:backdrop {
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+
+/* Floating windows get the thick xfwm4 frame (xfwm4/left-active.xpm):
+   from the edge inwards 2px white, 8px beige, 2px black. Inset shadows
+   paint in list order in GTK 4, so the widest one goes first.
+   A normal GTK titlebar is pulled out over the top and side frame, like
+   the xfwm4 title. libadwaita windows have no titlebar (their header bars
+   live inside the content), so for them the frame runs all the way round
+   and the header bars sit inside the black inner border.
+   Tiled, maximized and fullscreen windows (tiling compositors such as niri
+   or Sway) skip the frame so no space is wasted.
+   .solid-csd is what GTK uses on X11 without a compositor. */
+window.csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen),
+window.solid-csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) {
+  padding: 12px;
+}
+window.csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > .titlebar,
+window.solid-csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > .titlebar {
+  margin: -12px -12px 0 -12px;
+}
+/* xfwm4's titlebar also has a 2px highlight down its left edge */
+window.csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > headerbar.titlebar,
+window.solid-csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > headerbar.titlebar {
+  box-shadow: inset 2px 0 @ase_title_hi, inset 0 2px @ase_title_hi, inset 0 -2px @ase_ink;
+}
+window.csd.background:backdrop:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > headerbar.titlebar,
+window.solid-csd.background:backdrop:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > headerbar.titlebar {
+  box-shadow: inset 2px 0 @ase_hi, inset 0 2px @ase_hi, inset 0 -2px @ase_ink;
+}
+window.csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) {
+  box-shadow:
+    inset 0 0 0 12px @ase_ink,
+    inset 0 0 0 10px @ase_bg,
+    inset 0 0 0 2px @ase_hi,
+    inset 0 -6px @ase_hi,
+    inset 0 -4px @ase_bg_dark,
+    0 0 0 2px @ase_ink;
+}
+window.csd.background:backdrop:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) {
+  box-shadow:
+    inset 0 0 0 12px @ase_ink,
+    inset 0 0 0 10px @ase_bg,
+    inset 0 0 0 2px @ase_hi,
+    inset 0 -6px @ase_hi,
+    inset 0 -4px @ase_bg_dark,
+    0 0 0 2px @ase_ink;
+}
+/* No compositor: no room outside the window, so the outer black line is
+   drawn inside it. */
+window.solid-csd {
+  margin: 0;
+  padding: 2px;
+  box-shadow: inset 0 0 0 2px @ase_ink;
+}
+window.solid-csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) {
+  padding: 14px;
+  box-shadow:
+    inset 0 0 0 14px @ase_ink,
+    inset 0 0 0 12px @ase_bg,
+    inset 0 0 0 4px @ase_hi,
+    inset 0 -8px @ase_hi,
+    inset 0 -6px @ase_bg_dark,
+    inset 0 0 0 2px @ase_ink;
+}
+window.solid-csd.background:not(.tiled):not(.tiled-top):not(.tiled-left):not(.tiled-right):not(.tiled-bottom):not(.maximized):not(.fullscreen) > .titlebar {
+  margin: -14px -14px 0 -14px;
+}
+/* Tiled / maximized / fullscreen (e.g. niri columns, Sway tiles) — no
+   shadow; keep a hairline so edges stay readable. */
+window.csd.tiled, window.csd.tiled-top, window.csd.tiled-left,
+window.csd.tiled-right, window.csd.tiled-bottom {
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+window.csd.maximized, window.csd.fullscreen,
+window.solid-csd.maximized, window.solid-csd.fullscreen {
+  padding: 0;
+  box-shadow: none;
+}
+window.ssd { box-shadow: none; }
+
+/* Like the xfwm4 titlebar: 2px highlight, then 2px of blue before the
+   buttons start. The fixed min-height makes side-by-side header bars
+   (libadwaita split views such as Nautilus' sidebar + content) come out
+   the same height, so their bottom lines meet. */
+headerbar {
+  min-height: 36px;
+  padding: 4px;
+  border-spacing: 4px;
+  border: none;
+  border-radius: 0;
+  color: @ase_sel_fg;
+  background-color: @ase_title;
+  box-shadow:
+    inset 0 2px @ase_title_hi,
+    inset 0 -2px @ase_ink;
+}
+headerbar:backdrop {
+  color: @ase_fg;
+  background-color: @ase_title_backdrop;
+  box-shadow:
+    inset 0 2px @ase_hi,
+    inset 0 -2px @ase_ink;
+}
+headerbar .title {
+  padding: 0 12px;
+  font-weight: bold;
+}
+headerbar .subtitle {
+  font-size: smaller;
+  opacity: 0.8;
+}
+headerbar > windowhandle > box { border-spacing: 4px; }
+headerbar entry, headerbar spinbutton, headerbar button, headerbar dropdown {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+headerbar button, headerbar menubutton > button { color: @ase_fg; }
+headerbar button.flat, headerbar menubutton.flat > button { color: inherit; }
+headerbar button.flat:hover { color: @ase_fg; }
+headerbar separator { background-color: alpha(@ase_ink, 0.5); }
+headerbar.flat, headerbar.flat:backdrop {
+  background-color: transparent;
+  box-shadow: none;
+  color: @ase_fg;
+}
+/* Plain windows: exactly the 32px xfwm4 title (plus the 2px window line) */
+headerbar.default-decoration {
+  min-height: 22px;
+  padding: 4px;
+}
+
+/* Every GtkWindow without a custom titlebar gets this one. */
+window > .titlebar:not(headerbar) {
+  min-height: 26px;
+  color: @ase_sel_fg;
+  background-color: @ase_title;
+  box-shadow: inset 0 2px @ase_title_hi, inset 0 -2px @ase_ink;
+}
+
+/* Window buttons. The images are generated from xfwm4/*.xpm by
+   tools/xpm2svg.py, so CSD buttons are the xfwm4 buttons. */
+windowcontrols { border-spacing: 0; }
+/* Every state must resolve to the same box: these buttons also carry
+   .image-button, and if a hover rule changed their padding the button would
+   shrink away from the pointer, lose hover, grow back, and shake. */
+windowcontrols > button,
+windowcontrols > button.image-button,
+windowcontrols > button.image-button:hover,
+windowcontrols > button.image-button:active,
+windowcontrols > button.image-button:checked,
+windowcontrols > button.image-button:backdrop,
+windowcontrols > button.image-button:focus-visible,
+windowcontrols > button.image-button:disabled {
+  min-width: 18px;
+  min-height: 22px;
+  margin: 0 1px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 22px;
+  box-shadow: none;
+}
+windowcontrols > button > image,
+windowcontrols > button:hover > image,
+windowcontrols > button:active > image {
+  opacity: 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  -gtk-icon-size: 16px;
+  background: none;
+  transition: none;
+}
+windowcontrols > .icon { margin: 0 4px; }
+
+windowcontrols > button.close { background-image: url("assets/titlebutton-close.svg"); }
+windowcontrols > button.close:hover { background-image: url("assets/titlebutton-close-hover.svg"); }
+windowcontrols > button.close:active { background-image: url("assets/titlebutton-close-active.svg"); }
+windowcontrols > button.close:backdrop { background-image: url("assets/titlebutton-close-backdrop.svg"); }
+
+windowcontrols > button.minimize { background-image: url("assets/titlebutton-minimize.svg"); }
+windowcontrols > button.minimize:hover { background-image: url("assets/titlebutton-minimize-hover.svg"); }
+windowcontrols > button.minimize:active { background-image: url("assets/titlebutton-minimize-active.svg"); }
+windowcontrols > button.minimize:backdrop { background-image: url("assets/titlebutton-minimize-backdrop.svg"); }
+
+windowcontrols > button.maximize { background-image: url("assets/titlebutton-maximize.svg"); }
+windowcontrols > button.maximize:hover { background-image: url("assets/titlebutton-maximize-hover.svg"); }
+windowcontrols > button.maximize:active { background-image: url("assets/titlebutton-maximize-active.svg"); }
+windowcontrols > button.maximize:backdrop { background-image: url("assets/titlebutton-maximize-backdrop.svg"); }
+
+window.maximized windowcontrols > button.maximize { background-image: url("assets/titlebutton-restore.svg"); }
+window.maximized windowcontrols > button.maximize:hover { background-image: url("assets/titlebutton-restore-hover.svg"); }
+window.maximized windowcontrols > button.maximize:active { background-image: url("assets/titlebutton-restore-active.svg"); }
+window.maximized windowcontrols > button.maximize:backdrop { background-image: url("assets/titlebutton-restore-backdrop.svg"); }
+
+/* Dialogs */
+window.dialog.message .titlebar { min-height: 20px; }
+window.dialog.message box.dialog-vbox { border-spacing: 12px; padding: 12px; }
+window.dialog.message .dialog-action-area { padding: 8px; border-spacing: 8px; }
+window.dialog .dialog-action-area > button { min-width: 72px; }
+window.dialog.message.csd .dialog-action-box { margin: 0; padding: 8px; }
+
+/* Action bar and toolbars */
+/* Footer-type bars are slightly sunken panels (also statusbar below);
+   header-type bars (search bar, menu bar) are raised. Same in gtk-3.0. */
+actionbar > revealer > box {
+  padding: 4px;
+  border-top: 2px solid @ase_ink;
+  border-spacing: 4px;
+  background-color: @ase_panel;
+  box-shadow: none;
+}
+.toolbar, toolbar {
+  padding: 4px;
+  border-spacing: 4px;
+  background-color: @ase_bg;
+}
+.inline-toolbar {
+  padding: 4px;
+  border-spacing: 4px;
+  border: 2px solid @ase_ink;
+  background-color: @ase_bg;
+}
+.osd {
+  color: @ase_sel_fg;
+  background-color: alpha(@ase_ink, 0.8);
+}
+.osd button {
+  color: @ase_fg;
+}
+.osd.toolbar, toolbar.osd {
+  padding: 6px;
+  border: 2px solid @ase_ink;
+}
+
+
+/* =========================================================================
+ * Popovers and menus
+ * ========================================================================= */
+/* Newer GTK gives popovers the .background class too; that would paint
+   the whole popover surface, including the strip that only holds the
+   arrow. Only the contents box and the arrow itself are drawn. */
+popover, popover.background, popover.background:backdrop {
+  background: none;
+  box-shadow: none;
+  color: @ase_fg;
+}
+popover > contents {
+  min-width: 16px;
+  padding: 6px;
+  border: none;
+  border-radius: 0;
+  color: @ase_fg;
+  background-color: @ase_bg;
+  /* the GTK 3 menu bevel: white top/left/right, beige-brown bottom */
+  box-shadow:
+    inset 0 -2px @ase_hi,
+    inset 2px 0 @ase_hi,
+    inset -2px 0 @ase_hi,
+    inset 0 2px @ase_hi,
+    0 0 0 2px @ase_ink;
+}
+popover > arrow {
+  min-width: 0;
+  background-color: @ase_bg;
+  border: 2px solid @ase_ink;
+}
+popover > contents > list,
+popover > contents > .view,
+popover > contents > toolbar { background-color: transparent; border: none; }
+popover > contents separator { margin: 4px 0; background-color: @ase_bg_dark; }
+popover > contents > box > button.flat:hover { color: @ase_fg; }
+
+/* Context and app menus (GtkPopoverMenu) */
+popover.menu > contents { padding: 4px; }
+popover.menu box.inline-buttons { padding: 0 8px; }
+popover.menu box.inline-buttons button.image-button.model { min-height: 24px; min-width: 24px; padding: 0; }
+popover.menu box.circular-buttons { padding: 6px 12px; }
+
+modelbutton {
+  min-height: 22px;
+  min-width: 40px;
+  padding: 2px 8px;
+  border-radius: 0;
+  border-spacing: 6px;
+  color: @ase_fg;
+  background: none;
+  box-shadow: none;
+}
+modelbutton:hover,
+modelbutton:selected,
+modelbutton:focus:focus-visible,
+popover.menu modelbutton:selected {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  outline-color: transparent;
+}
+modelbutton:disabled { color: @ase_menu_disabled_fg; }
+modelbutton accelerator {
+  margin-left: 20px;
+  color: alpha(currentColor, 0.6);
+}
+modelbutton arrow.left { -gtk-icon-source: -gtk-icontheme("pan-start-symbolic"); }
+modelbutton arrow.right { -gtk-icon-source: -gtk-icontheme("pan-end-symbolic"); }
+modelbutton check, modelbutton radio { margin: 0; }
+popover.menu label.title { font-weight: bold; padding: 4px 32px; }
+
+/* Menu bar */
+/* Menu bars are a raised, outlined panel (the same in gtk-3.0) */
+menubar {
+  padding: 2px;
+  border: 2px solid @ase_ink;
+  background-color: @ase_panel;
+  box-shadow: inset 0 2px @ase_hi, inset 2px 0 @ase_hi;
+}
+window > menubar:first-child, window > box > menubar:first-child { border-top-width: 0; }
+menubar > item {
+  min-height: 18px;
+  padding: 4px 10px;
+  color: @ase_fg;
+}
+menubar > item:hover,
+menubar > item:selected {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+menubar > item:disabled { color: @ase_disabled_fg; }
+
+
+/* =========================================================================
+ * Dropdowns and combo boxes
+ * ========================================================================= */
+dropdown > button > box > stack > row.activatable:hover,
+dropdown > button > box > stack > row { background: none; padding: 0; }
+dropdown popover.menu > contents { padding: 2px; }
+dropdown popover listview > row { padding: 2px 6px; }
+dropdown popover listview > row:selected,
+dropdown popover listview > row:hover {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+dropdown popover listview > row > box > image { -gtk-icon-source: none; }
+dropdown popover listview > row:selected > box > image,
+dropdown popover listview > row > box > image:checked { -gtk-icon-source: -gtk-icontheme("object-select-symbolic"); }
+combobox > box > button.combo > box { border-spacing: 6px; }
+combobox cellview { padding: 0; }
+
+
+/* =========================================================================
+ * Lists, list views, column views, tree views
+ * ========================================================================= */
+list, listview, columnview, gridview, treeview.view {
+  color: @ase_fg;
+  background-color: @ase_base;
+}
+/* Rows sit edge to edge, so hover and selection colours run into the
+   next row and up to separators instead of leaving gaps (some apps, e.g.
+   Nautilus, space their rows apart). */
+list > row, listview > row, columnview > listview > row {
+  padding: 2px;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 0;
+}
+listview, columnview > listview { border-spacing: 0; }
+/* Hovered rows and items take the selection blue-grey (with white text),
+   so the row under the pointer is easy to see on the cream / slate views. */
+list > row.activatable:hover,
+listview > row:hover,
+columnview > listview > row:hover,
+gridview > child:hover,
+flowbox > flowboxchild:hover,
+.navigation-sidebar > row.activatable:hover,
+.navigation-sidebar > row:hover,
+.navigation-sidebar row.activatable:hover,
+.navigation-sidebar > child.activatable:hover,
+.navigation-sidebar > flowboxchild:hover,
+listview.navigation-sidebar > row:hover,
+stacksidebar row:hover,
+placessidebar row:hover {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+list > row:selected,
+listview > row:selected,
+columnview > listview > row:selected,
+gridview > child:selected,
+flowbox > flowboxchild:selected,
+treeview.view:selected {
+  color: @ase_sel_fg;
+  background-color: @ase_sel;
+}
+list > row:selected:backdrop,
+listview > row:selected:backdrop,
+columnview > listview > row:selected:backdrop,
+gridview > child:selected:backdrop,
+treeview.view:selected:backdrop {
+  color: @ase_sel_fg;
+  background-color: @ase_lo;
+}
+list > row:focus-visible,
+listview > row:focus-visible { outline-offset: -2px; }
+
+list.boxed-list, list.content, listview.card {
+  border: 2px solid @ase_ink;
+}
+list.boxed-list > row:not(:last-child),
+list.separators > row:not(:last-child),
+listview.separators > row:not(:last-child) {
+  border-bottom: 2px solid @ase_bg;
+}
+list.navigation-sidebar, listview.navigation-sidebar,
+.navigation-sidebar { padding: 0; background-color: @ase_bg; }
+.navigation-sidebar > row { padding: 6px 10px; margin: 0; border-radius: 0; }
+.navigation-sidebar > row:selected {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+.navigation-sidebar > separator,
+list.navigation-sidebar > separator,
+listview.navigation-sidebar > separator { margin: 0; background-color: @ase_bg_dark; }
+/* separators inside a sidebar list are also drawn as rows' neighbours */
+.navigation-sidebar > row.separator, .navigation-sidebar separator.horizontal { margin: 0; }
+
+gridview > child, flowbox > flowboxchild { padding: 4px; border-radius: 0; }
+
+/* Column view headers */
+columnview > header > button,
+treeview.view > header > button {
+  min-height: 0;
+  margin: 0;
+  padding: 2px 6px;
+  border-right: 2px solid @ase_ink;
+  border-bottom: 2px solid @ase_ink;
+  box-shadow: inset 0 -2px @ase_lo, inset 0 2px @ase_hi, inset 2px 0 @ase_hi;
+  background-color: @ase_face;
+  font-weight: bold;
+}
+columnview > header > button:hover,
+treeview.view > header > button:hover { background-color: @ase_hi; }
+columnview > header > button > box > sort-indicator { min-width: 16px; min-height: 16px; }
+columnview > header > button > box > sort-indicator.ascending { -gtk-icon-source: -gtk-icontheme("pan-up-symbolic"); }
+columnview > header > button > box > sort-indicator.descending { -gtk-icon-source: -gtk-icontheme("pan-down-symbolic"); }
+columnview.column-separators > listview > row > cell:not(:last-child),
+columnview.column-separators > header > button:not(:last-child) {
+  border-right: 2px solid @ase_bg;
+}
+columnview > listview > row > cell { padding: 2px 6px; }
+
+treeview.view { border-left-color: alpha(@ase_ink, 0.25); border-top-color: alpha(@ase_ink, 0.25); }
+treeview.view:drop(active) { border: 2px solid @ase_ink; }
+treeview.view.expander {
+  min-width: 16px;
+  min-height: 16px;
+  -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+}
+treeview.view.expander:checked { -gtk-icon-source: -gtk-icontheme("pan-down-symbolic"); }
+treeview entry.flat, treeview entry { box-shadow: 0 0 0 2px @ase_ink; }
+
+/* Tree expanders in list views */
+treeexpander > expander, expander-widget > box > title > expander, expander > title > arrow {
+  min-width: 16px;
+  min-height: 16px;
+  -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+}
+treeexpander > expander:checked,
+expander-widget:checked > box > title > expander,
+expander-widget > box > title > expander:checked {
+  -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+}
+treeexpander > expander:dir(rtl) { -gtk-icon-source: -gtk-icontheme("pan-start-symbolic"); }
+
+/* Rich lists (libadwaita-ish "card" look) */
+.card {
+  color: @ase_fg;
+  background-color: @ase_base;
+  box-shadow: 0 0 0 2px @ase_ink;
+  border-radius: 0;
+}
+
+
+/* =========================================================================
+ * Frames, scrolled windows, separators, panes
+ * ========================================================================= */
+frame, .frame {
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+}
+frame.flat, .frame.flat { border-style: none; }
+frame > label { margin: 0 4px; }
+
+/* A scrolled window only has .frame when the app asked for a border
+   (has-frame), so honour it as a framed white content box. Unframed
+   scrolled windows (whole pages, forms) are left alone. */
+scrolledwindow.frame {
+  border: 2px solid @ase_ink;
+  background-color: @ase_base;
+}
+scrolledwindow.frame > viewport,
+scrolledwindow.frame > viewport > list,
+scrolledwindow.frame > listview,
+scrolledwindow.frame > columnview,
+scrolledwindow.frame > gridview,
+scrolledwindow.frame > viewport > flowbox,
+scrolledwindow.frame > textview { background-color: @ase_base; }
+scrolledwindow > overshoot.top { box-shadow: inset 0 4px alpha(@ase_sel, 0.5); }
+scrolledwindow > overshoot.bottom { box-shadow: inset 0 -4px alpha(@ase_sel, 0.5); }
+scrolledwindow > overshoot.left { box-shadow: inset 4px 0 alpha(@ase_sel, 0.5); }
+scrolledwindow > overshoot.right { box-shadow: inset -4px 0 alpha(@ase_sel, 0.5); }
+scrolledwindow > junction { background-color: @ase_bg; }
+
+separator {
+  min-width: 2px;
+  min-height: 2px;
+  background-color: @ase_ink;
+}
+separator.spacer { background: none; }
+popover separator, menu separator { background-color: @ase_bg_dark; }
+
+paned > separator {
+  min-width: 2px;
+  min-height: 2px;
+  background-color: @ase_ink;
+}
+paned > separator.wide {
+  min-width: 6px;
+  min-height: 6px;
+  background-color: @ase_bg;
+  box-shadow: inset 2px 0 @ase_ink, inset -2px 0 @ase_ink;
+}
+paned.vertical > separator.wide { box-shadow: inset 0 2px @ase_ink, inset 0 -2px @ase_ink; }
+
+.sidebar, placessidebar, stacksidebar {
+  background-color: @ase_bg;
+  border-style: none;
+}
+.sidebar:dir(ltr), placessidebar:dir(ltr), stacksidebar:dir(ltr) { border-right: 2px solid @ase_ink; }
+.sidebar:dir(rtl), placessidebar:dir(rtl), stacksidebar:dir(rtl) { border-left: 2px solid @ase_ink; }
+stacksidebar list { background-color: @ase_bg; }
+stacksidebar row { padding: 8px 10px; }
+stacksidebar row:selected { color: @ase_sel_fg; background-color: @ase_blue; }
+placessidebar row { min-height: 28px; padding: 0 6px; }
+placessidebar row:selected { color: @ase_sel_fg; background-color: @ase_blue; }
+placessidebar row > revealer { padding: 0 6px; }
+
+
+/* =========================================================================
+ * Notebook tabs — reuses the GTK 3 pixel tab borders
+ * ========================================================================= */
+notebook { padding: 0; }
+notebook.frame { border: 2px solid @ase_ink; }
+notebook > header {
+  padding: 2px 2px 0 2px;
+  background-color: @ase_bg;
+}
+notebook > header.top { box-shadow: inset 0 -2px @ase_ink; }
+notebook > header.bottom { box-shadow: inset 0 2px @ase_ink; padding: 0 2px 2px 2px; }
+notebook > header.left { box-shadow: inset -2px 0 @ase_ink; padding: 2px 0 2px 2px; }
+notebook > header.right { box-shadow: inset 2px 0 @ase_ink; padding: 2px 2px 2px 0; }
+
+notebook > header > tabs { border-spacing: 2px; }
+/* The top/bottom tab images start with a 2px transparent column (the gap
+   to the previous tab): pull the row left so the first tab's outline lines
+   up with the edge of the notebook / its black frame. */
+notebook > header.top, notebook > header.bottom { padding-left: 0; }
+notebook > header.top > tabs, notebook > header.bottom > tabs { margin-left: -2px; }
+notebook.frame > header.top > tabs, notebook.frame > header.bottom > tabs { margin-left: -4px; }
+/* Unselected tabs stand on the header's black line; the selected tab
+   reaches over it into the page (like GTK 3). */
+notebook > header.top { padding-bottom: 2px; }
+notebook > header.bottom { padding-top: 2px; }
+notebook > header.left { padding-right: 2px; }
+notebook > header.right { padding-left: 2px; }
+notebook > header.top > tabs > tab:checked { margin-bottom: -2px; }
+notebook > header.bottom > tabs > tab:checked { margin-top: -2px; }
+notebook > header.left > tabs > tab:checked { margin-right: -2px; }
+notebook > header.right > tabs > tab:checked { margin-left: -2px; }
+notebook > header > tabs > tab {
+  min-height: 20px;
+  min-width: 20px;
+  padding: 2px 10px;
+  color: alpha(@ase_fg, 0.7);
+  background-color: @ase_face;
+  background-clip: padding-box;
+  outline-offset: -6px;
+}
+notebook > header > tabs > tab:hover { color: @ase_fg; background-color: @ase_face_hover; }
+notebook > header > tabs > tab:checked { color: @ase_sel_fg; background-color: @ase_blue; }
+
+notebook > header.top > tabs > tab {
+  border-style: solid;
+  border-width: 6px 4px 0 6px;
+  border-image: url("assets/tab-top.png") 6 4 0 6 stretch;
+}
+notebook > header.top > tabs > tab:checked {
+  border-image: url("assets/tab-top-active.png") 6 4 0 6 stretch;
+}
+notebook > header.bottom > tabs > tab {
+  border-style: solid;
+  border-width: 0 4px 6px 6px;
+  border-image: url("assets/tab-bottom.png") 0 4 6 6 stretch;
+}
+notebook > header.bottom > tabs > tab:checked {
+  border-image: url("assets/tab-bottom-active.png") 0 4 6 6 stretch;
+}
+notebook > header.right > tabs > tab {
+  border-style: solid;
+  border-width: 4px 6px 6px 0;
+  border-image: url("assets/tab-right.png") 4 6 6 0 stretch;
+}
+notebook > header.right > tabs > tab:checked {
+  border-image: url("assets/tab-right-active.png") 4 6 6 0 stretch;
+}
+notebook > header.left > tabs > tab {
+  border-style: solid;
+  border-width: 4px 0 6px 6px;
+  border-image: url("assets/tab-left.png") 4 0 6 6 stretch;
+}
+notebook > header.left > tabs > tab:checked {
+  border-image: url("assets/tab-left-active.png") 4 0 6 6 stretch;
+}
+notebook > header > tabs > tab button.flat { min-width: 16px; min-height: 16px; padding: 0; margin: 0 -4px 0 4px; }
+notebook > header > tabs > arrow { color: @ase_fg; margin: 0 2px; }
+notebook > header > tabs > arrow:disabled { color: alpha(@ase_fg, 0.4); }
+notebook > header.top > tabs > arrow.up,
+notebook > header.bottom > tabs > arrow.up { -gtk-icon-source: -gtk-icontheme("pan-end-symbolic"); }
+notebook > header.top > tabs > arrow.down,
+notebook > header.bottom > tabs > arrow.down { -gtk-icon-source: -gtk-icontheme("pan-start-symbolic"); }
+notebook > header.left > tabs > arrow.up,
+notebook > header.right > tabs > arrow.up { -gtk-icon-source: -gtk-icontheme("pan-down-symbolic"); }
+notebook > header.left > tabs > arrow.down,
+notebook > header.right > tabs > arrow.down { -gtk-icon-source: -gtk-icontheme("pan-up-symbolic"); }
+
+/* The page area uses the Aseprite blue-grey "workspace" bevel */
+notebook > stack:not(:only-child) {
+  background-color: @ase_bg;
+}
+
+/* Stack switchers (GtkStackSwitcher) */
+stackswitcher { border-spacing: 0; }
+stackswitcher > button { margin: 2px 0 2px 0; }
+stackswitcher > button:not(:first-child) { margin-left: 2px; }
+stackswitcher > button > label { padding: 0 6px; }
+
+
+/* =========================================================================
+ * Scrollbars — classic look, no overlay fading
+ * ========================================================================= */
+scrollbar {
+  background-color: @ase_bg;
+  transition: none;
+}
+scrollbar > range > trough {
+  border: 2px solid @ase_ink;
+  background-color: @ase_blue;
+  box-shadow: inset 2px 2px @ase_blue_lo;
+}
+scrollbar > range > trough > slider {
+  min-width: 10px;
+  min-height: 10px;
+  margin: -2px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  background-color: @ase_face;
+  box-shadow: inset 0 -2px @ase_lo, inset 2px 0 @ase_hi, inset 0 2px @ase_hi, inset -2px 0 @ase_lo;
+}
+scrollbar > range > trough > slider:hover { background-color: @ase_face_hover; }
+scrollbar > range > trough > slider:active {
+  background-color: @ase_hi;
+}
+scrollbar > range > trough > slider:disabled { background-color: @ase_disabled_bg; }
+scrollbar.vertical > range > trough > slider { min-height: 40px; }
+scrollbar.horizontal > range > trough > slider { min-width: 40px; }
+
+/* Overlay scrollbars (default in GTK 4): thin until the pointer is near */
+scrollbar.overlay-indicator { background: none; }
+scrollbar.overlay-indicator:not(.hovering) > range > trough {
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+scrollbar.overlay-indicator:not(.hovering) > range > trough > slider {
+  min-width: 4px;
+  min-height: 4px;
+  margin: 2px;
+  border-width: 1px;
+  box-shadow: none;
+  background-color: @ase_lo;
+}
+scrollbar.overlay-indicator.vertical:not(.hovering) > range > trough > slider { min-height: 40px; }
+scrollbar.overlay-indicator.horizontal:not(.hovering) > range > trough > slider { min-width: 40px; }
+scrollbar.overlay-indicator.hovering { background-color: alpha(@ase_bg, 0.9); }
+
+
+/* =========================================================================
+ * Scales (sliders) — reuses the GTK 3 pixel slider images
+ * ========================================================================= */
+scale { min-height: 16px; min-width: 16px; padding: 8px; }
+scale > trough {
+  min-height: 4px;
+  min-width: 4px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  background-color: @ase_blue_hi;
+}
+scale > trough > highlight {
+  border-radius: 0;
+  background-color: @ase_blue;
+}
+scale > trough > fill { background-color: alpha(@ase_ink, 0.15); }
+scale:disabled > trough { background-color: @ase_disabled_bg; }
+scale:disabled > trough > highlight { background-color: @ase_lo; }
+
+scale > trough > slider {
+  min-width: 12px;
+  min-height: 16px;
+  margin: -8px -6px;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("assets/slider-horiz.png");
+  box-shadow: none;
+}
+scale > trough > slider:disabled,
+scale > trough > slider:backdrop { background-image: url("assets/slider-horiz-insensitive.png"); }
+scale.marks-before:not(.marks-after) > trough > slider { background-image: url("assets/slider-horiz-top.png"); }
+scale.marks-before:not(.marks-after) > trough > slider:disabled,
+scale.marks-before:not(.marks-after) > trough > slider:backdrop { background-image: url("assets/slider-horiz-top-insensitive.png"); }
+
+scale.vertical > trough > slider {
+  min-width: 16px;
+  min-height: 12px;
+  margin: -6px -8px;
+  background-image: url("assets/slider-vert.png");
+}
+scale.vertical > trough > slider:disabled,
+scale.vertical > trough > slider:backdrop { background-image: url("assets/slider-vert-insensitive.png"); }
+scale.vertical.marks-before:not(.marks-after) > trough > slider { background-image: url("assets/slider-vert-left.png"); }
+scale.vertical.marks-before:not(.marks-after) > trough > slider:disabled,
+scale.vertical.marks-before:not(.marks-after) > trough > slider:backdrop { background-image: url("assets/slider-vert-left-insensitive.png"); }
+
+scale > value { color: @ase_fg; }
+scale > marks { color: @ase_fg; }
+scale > marks.top { margin-bottom: 6px; }
+scale > marks.bottom { margin-top: 6px; }
+scale.vertical > marks.top { margin-right: 6px; margin-bottom: 0; }
+scale.vertical > marks.bottom { margin-left: 6px; margin-top: 0; }
+scale > marks > mark > indicator {
+  min-height: 6px;
+  min-width: 2px;
+  background-color: @ase_ink;
+}
+scale.vertical > marks > mark > indicator { min-height: 2px; min-width: 6px; }
+scale.fine-tune > trough > slider { margin: -6px; }
+
+
+/* =========================================================================
+ * Progress, level bars, spinners
+ * ========================================================================= */
+progressbar { color: @ase_fg; font-size: smaller; }
+progressbar > trough {
+  min-height: 12px;
+  min-width: 12px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  background-color: @ase_blue;
+  box-shadow: inset 2px 2px @ase_blue_lo;
+}
+progressbar > trough > progress {
+  min-height: 12px;
+  min-width: 12px;
+  margin: -2px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  background-color: @ase_blue_hi;
+  box-shadow: inset 2px 2px @ase_hi;
+}
+progressbar.osd { min-height: 4px; background: none; }
+progressbar.osd > trough { min-height: 4px; border: none; background: none; box-shadow: none; }
+progressbar.osd > trough > progress { min-height: 4px; margin: 0; border: none; background-color: @ase_sel; box-shadow: none; }
+
+levelbar > trough {
+  padding: 2px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  background-color: @ase_bg;
+}
+levelbar.horizontal > trough > block { min-height: 8px; }
+levelbar.vertical > trough > block { min-width: 8px; }
+levelbar.horizontal.discrete > trough > block { margin: 0 1px; min-width: 24px; }
+levelbar.vertical.discrete > trough > block { margin: 1px 0; min-height: 24px; }
+levelbar > trough > block {
+  border-radius: 0;
+  background-color: @ase_blue;
+}
+levelbar > trough > block.low { background-color: #ff5500; }
+levelbar > trough > block.high, levelbar > trough > block:not(.empty) { background-color: @ase_blue; }
+levelbar > trough > block.full { background-color: #2e9e5e; }
+levelbar > trough > block.empty { background-color: alpha(@ase_ink, 0.1); }
+
+spinner {
+  min-width: 16px;
+  min-height: 16px;
+  opacity: 0;
+  -gtk-icon-source: -gtk-icontheme("process-working-symbolic");
+}
+@keyframes ase-spin { to { transform: rotate(1turn); } }
+spinner:checked {
+  opacity: 1;
+  animation: ase-spin 1s linear infinite;
+}
+spinner:checked:disabled { opacity: 0.5; }
+
+
+/* =========================================================================
+ * Switch
+ * ========================================================================= */
+switch {
+  min-width: 0;
+  min-height: 0;
+  margin: 2px;
+  padding: 0;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  color: @ase_fg;
+  background-color: @ase_blue_hi;
+  box-shadow: inset 2px 2px alpha(@ase_ink, 0.25);
+}
+switch:checked {
+  color: @ase_sel_fg;
+  background-color: @ase_blue_lo;
+}
+switch:disabled {
+  color: @ase_disabled_fg;
+  background-color: @ase_disabled_bg;
+  border-color: @ase_lo;
+}
+switch > image { margin: 0 6px; }
+switch > slider {
+  min-width: 22px;
+  min-height: 20px;
+  margin: -2px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  background-color: @ase_face;
+  box-shadow: inset 0 -2px @ase_lo, inset 2px 0 @ase_hi, inset 0 2px @ase_hi, inset -2px 0 @ase_lo;
+}
+switch:hover > slider { background-color: @ase_face_hover; }
+switch:disabled > slider { background-color: @ase_disabled_bg; border-color: @ase_lo; }
+
+
+/* =========================================================================
+ * Expanders, info bars, banners, tooltips, misc
+ * ========================================================================= */
+expander { min-width: 16px; min-height: 16px; -gtk-icon-source: -gtk-icontheme("pan-end-symbolic"); }
+expander:checked { -gtk-icon-source: -gtk-icontheme("pan-down-symbolic"); }
+expander:dir(rtl) { -gtk-icon-source: -gtk-icontheme("pan-start-symbolic"); }
+expander-widget > box > title { padding: 2px; border-spacing: 4px; }
+expander-widget > box > title:hover > expander { color: @ase_blue_lo; }
+
+infobar > revealer > box {
+  padding: 6px;
+  border-spacing: 8px;
+  border-bottom: 2px solid @ase_ink;
+}
+infobar.info > revealer > box     { color: @ase_sel_fg; background-color: #0055ff; }
+infobar.warning > revealer > box  { color: @ase_sel_fg; background-color: #ff8300; }
+infobar.question > revealer > box { color: @ase_sel_fg; background-color: #2c2c2c; }
+infobar.error > revealer > box    { color: @ase_sel_fg; background-color: #ff0000; }
+infobar.action:hover > revealer > box { background-image: image(alpha(@ase_hi, 0.1)); }
+
+/* Tooltips: the selection blue-grey with white text inside a 2px black
+   border (drawn inside, as a tooltip's own surface clips anything outside).
+   "tooltip.background" is needed to beat the generic .background rule. */
+tooltip, tooltip.background, tooltip.background:backdrop {
+  padding: 4px 6px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow: none;
+}
+tooltip > box { border-spacing: 6px; }
+tooltip * { background: none; color: @ase_sel_fg; }
+
+calendar {
+  padding: 2px;
+  border: 2px solid @ase_ink;
+  color: @ase_fg;
+  background-color: @ase_base;
+}
+calendar > header {
+  border-bottom: 2px solid @ase_ink;
+  background-color: @ase_bg;
+}
+calendar > header > button { margin: 2px; padding: 2px 4px; }
+calendar > grid { padding: 2px; }
+calendar > grid > label.day-name { font-weight: bold; color: @ase_blue_lo; }
+calendar > grid > label.week-number { color: alpha(@ase_fg, 0.5); }
+calendar > grid > label.today { box-shadow: inset 0 0 0 2px @ase_ink; }
+calendar > grid > label.other-month { color: alpha(@ase_fg, 0.35); }
+calendar > grid > label:selected { color: @ase_sel_fg; background-color: @ase_sel; }
+calendar > grid > label:focus-visible { outline-offset: -2px; }
+
+textview { background-color: @ase_base; }
+textview > text { background-color: @ase_base; }
+textview > border { background-color: @ase_bg; }
+
+/* Color chooser */
+colorswatch { min-width: 32px; min-height: 32px; }
+colorswatch > overlay { border-radius: 0; box-shadow: inset 0 0 0 2px alpha(@ase_ink, 0.15); }
+colorswatch:selected > overlay { box-shadow: inset 0 0 0 2px @ase_ink, inset 0 0 0 4px @ase_hi; }
+colorswatch:hover > overlay { box-shadow: inset 0 0 0 2px @ase_ink; }
+colorswatch:drop(active) { box-shadow: inset 0 0 0 2px @ase_focus; }
+colorchooser .popover.osd { border-radius: 0; }
+colorswatch#add-color-button > overlay { background-color: @ase_face; color: @ase_fg; }
+plane { min-width: 48px; min-height: 48px; }
+colorscale > trough { border: 2px solid @ase_ink; }
+
+/* File chooser path bar */
+pathbar > button { margin: 2px 0; padding: 2px 6px; }
+pathbar > button:not(:first-child) { margin-left: 2px; }
+pathbar > button.slider-button { padding: 2px 2px; }
+
+/* Emoji chooser */
+popover.emoji-picker > contents { padding: 0; }
+popover.emoji-picker .emoji-section { padding: 0 4px; border-top: 2px solid @ase_bg_dark; }
+emoji { font-size: x-large; padding: 6px; border-radius: 0; }
+emoji:hover, emoji:focus:focus-visible { background-color: @ase_blue_hi; }
+
+/* Status bar, toast-like notifications */
+statusbar { padding: 4px 8px; border-top: 2px solid @ase_ink; background-color: @ase_panel; box-shadow: none; }
+.app-notification {
+  margin: 8px;
+  padding: 8px;
+  border: 2px solid @ase_ink;
+  border-radius: 0;
+  color: @ase_fg;
+  background-color: @ase_base;
+}
+
+/* Generic message area states some apps use */
+.error   { color: @error_color; }
+.warning { color: @warning_color; }
+.success { color: @success_color; }
+.accent  { color: @accent_color; }
+
+/* Print dialog paper preview */
+printdialog paper { border: 2px solid @ase_ink; background: white; padding: 0; }
+printdialog .dialog-action-box { margin: 12px; }
+
+/* Shortcuts window keycaps */
+shortcut > .keycap, shortcuts-section .keycap, label.keycap {
+  min-width: 16px;
+  padding: 2px 6px;
+  color: @ase_fg;
+  background-color: @ase_face;
+  border-radius: 0;
+  box-shadow: inset 0 -2px @ase_lo, 0 0 0 2px @ase_ink;
+}
+
+/* Touch selection handles and magnifier */
+cursor-handle { color: @ase_sel; -gtk-icon-source: -gtk-icontheme("selection-mode-symbolic"); }
+magnifier { background-color: @ase_base; }
+
+/* Video controls */
+video { background-color: black; }
+.osd.toolbar, controls { color: @ase_sel_fg; background-color: alpha(@ase_ink, 0.8); }
+
+
+/* =========================================================================
+ * Selected rows keep their colour while hovered
+ * ========================================================================= */
+list > row:selected:hover,
+list > row.activatable:selected:hover,
+listview > row:selected:hover,
+columnview > listview > row:selected:hover,
+gridview > child:selected:hover {
+  color: @ase_sel_fg;
+  background-color: @ase_sel;
+}
+.navigation-sidebar > row:selected:hover,
+list.navigation-sidebar > row.activatable:selected:hover,
+listview.navigation-sidebar > row:selected:hover {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+}
+
+
+/* =========================================================================
+ * libadwaita widgets
+ *
+ * Only used when the stylesheet is also loaded from ~/.config/gtk-4.0
+ * (see README): libadwaita apps ignore the GTK theme otherwise. These are
+ * plain selectors, so they are harmless for normal GTK 4 apps. The colour
+ * variables newer libadwaita reads live in libadwaita.css.
+ * ========================================================================= */
+
+/* No rounded corners anywhere — Aseprite is all square pixels. */
+.boxed-list, list.boxed-list, .boxed-list-separate > row,
+.card, preferencesgroup .boxed-list,
+bottom-sheet > sheet, floating-sheet > sheet,
+toast, banner > revealer > widget, tabbar tab, tabgrid tabthumbnail .card,
+toggle-group, toggle-group > toggle, viewswitcher button,
+row.entry, row.spin, row.combo, row.expander, .osd, inlineviewswitcher {
+  border-radius: 0;
+}
+.boxed-list > row:first-child, .boxed-list > row:last-child,
+list.boxed-list > row:first-child, list.boxed-list > row:last-child {
+  border-radius: 0;
+}
+
+/* Boxed lists and cards: white panel with a black outline */
+.boxed-list, list.boxed-list, .boxed-list-separate > row, .card {
+  color: @ase_fg;
+  background-color: @ase_base;
+  border: none;
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+.boxed-list-separate > row { margin-bottom: 8px; }
+.card.activatable:hover { background-color: @ase_card_hover; }
+.card.activatable:active { background-color: @ase_blue_hi; }
+
+/* Dialogs (AdwDialog / AdwAlertDialog) and bottom sheets.
+   floating-sheet (and bottom-sheet) fill the whole window: they hold the
+   dimming layer and the dialog box itself (sheet). Only the sheet is drawn
+   as a box; the full-window layer stays unpainted. */
+dialog.floating, dialog.bottom-sheet, floating-sheet, bottom-sheet,
+dialog.floating:backdrop, floating-sheet:backdrop {
+  background: none;
+  box-shadow: none;
+}
+floating-sheet > dimming, bottom-sheet > dimming, dialog-host > dimming {
+  background-color: alpha(@ase_ink, 0.35);
+}
+floating-sheet > sheet, bottom-sheet > sheet,
+floating-sheet > sheet:backdrop, bottom-sheet > sheet:backdrop {
+  color: @ase_fg;
+  background-color: @ase_bg;
+  border-radius: 0;
+  box-shadow:
+    inset 0 2px @ase_hi,
+    inset 2px 0 @ase_hi,
+    inset -2px 0 @ase_hi,
+    inset 0 -2px @ase_hi,
+    0 0 0 2px @ase_ink;
+}
+/* A bottom sheet docks to the window edge: no line along the bottom. */
+bottom-sheet > sheet { box-shadow: inset 0 2px @ase_hi, 0 -2px 0 0 @ase_ink; }
+
+/* Alert dialogs: heading, body text and a row of response buttons */
+dialog.alert .message-area { padding: 18px 18px 12px 18px; }
+dialog.alert .message-area .heading, dialog.alert .message-area .title-2 { color: @ase_fg; }
+dialog.alert .message-area .body { color: @ase_fg; }
+dialog.alert .response-area { padding: 6px 12px 12px 12px; border-spacing: 12px; }
+dialog.alert .response-area > button { margin: 2px; min-width: 96px; }
+dialog.alert .response-area > separator { background: none; min-width: 0; min-height: 0; }
+
+/* Toggle groups (libadwaita 1.7+) — a row of linked Aseprite buttons */
+toggle-group {
+  padding: 0;
+  border-spacing: 2px;
+  background-color: @ase_ink;
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+toggle-group > toggle {
+  min-height: 20px;
+  padding: 4px 10px;
+  color: @ase_fg;
+  background-color: @ase_face;
+  box-shadow: inset 0 -4px @ase_hi, inset 0 -2px @ase_lo, inset 2px 0 @ase_hi, inset -2px 0 @ase_hi, inset 0 2px @ase_hi;
+}
+toggle-group > toggle:hover { background-color: @ase_face_hover; }
+toggle-group > toggle:checked {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow: inset 2px 2px @ase_blue_lo;
+}
+toggle-group > separator { min-width: 0; background: none; }
+toggle-group.flat, toggle-group.round { box-shadow: 0 0 0 2px @ase_ink; }
+toggle-group.osd > toggle:checked { color: @ase_sel_fg; background-color: @ase_ink; }
+
+/* View switcher (AdwViewSwitcher) */
+viewswitcher button.toggle { margin: 2px 0; }
+viewswitcher button.toggle:not(:first-child) { margin-left: 2px; }
+
+/* Toasts and banners */
+toast {
+  margin: 12px;
+  padding: 4px 4px 4px 12px;
+  color: @ase_fg;
+  background-color: @ase_tip;
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+banner > revealer > widget {
+  padding: 6px;
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow: inset 0 -2px @ase_ink;
+}
+
+/* Tab bar (AdwTabBar) */
+/* The tab strip leaves the same gap around the tabs on every side: the
+   tab box already keeps 5px at its ends, so the bar adds 5px above and
+   5px (+2px for its bottom line) below. */
+tabbar .box {
+  padding: 5px 0 7px 0;
+  background-color: @ase_bg;
+  box-shadow: inset 0 -2px @ase_ink;
+}
+tabbar tabbox { padding-top: 0; padding-bottom: 0; min-height: 0; }
+tabbar tabbox > tabboxchild { border-radius: 0; }
+tabbar tab {
+  margin: 2px;
+  color: @ase_fg;
+  background-color: @ase_face;
+  box-shadow: inset 0 2px @ase_hi, inset 2px 0 @ase_hi, 0 0 0 2px @ase_ink;
+}
+tabbar tab:hover { background-color: @ase_face_hover; }
+tabbar tab:selected {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow: inset 0 2px @ase_blue_hi, inset 2px 0 @ase_blue_hi, 0 0 0 2px @ase_ink;
+}
+
+/* Preferences pages, status pages */
+preferencesgroup > box > box.header .title,
+preferencesgroup .heading { font-weight: bold; }
+statuspage > scrolledwindow > viewport > box > clamp > box > .icon { color: alpha(@ase_fg, 0.6); }
+
+/* Expander rows: neutral arrow (libadwaita tints it with the accent colour),
+   and the nested rows read as one more row of the list instead of a
+   separate box with thin black lines above and below. */
+row.expander:checked image.expander-row-arrow:not(:disabled) { color: @ase_fg; }
+list > row.expander, listview > row.expander { padding: 0; }
+row.expander > box > list { background: none; border: none; box-shadow: none; }
+row.expander list.nested {
+  border: none;
+  box-shadow: none;
+  background-color: @ase_card_hover;
+}
+list.boxed-list > row.expander row.header, list.content > row.expander row.header,
+row.expander list.nested > row { border-bottom: 2px solid @ase_bg; }
+row.expander:not(:checked) row.header,
+row.expander list.nested > row:last-child { border-bottom: none; }
+
+/* Spin rows: a plain number with the two buttons, like the other rows,
+   not a full entry box inside the row. */
+row.spin spinbutton, row.spin spinbutton:focus-within {
+  background: none;
+  box-shadow: none;
+  border-spacing: 4px;
+}
+row.spin spinbutton > text { padding: 0 4px; min-width: 0; }
+row.spin spinbutton:not(.vertical) > button.image-button,
+row.spin spinbutton:not(.vertical) > button.image-button:hover,
+row.spin spinbutton:not(.vertical) > button.image-button:active,
+row.spin spinbutton:not(.vertical) > button.image-button:disabled {
+  min-width: 20px;
+  min-height: 20px;
+  margin: 0 2px;
+}
+row.spin spinbutton:not(.vertical) > button.image-button {
+  box-shadow: inset 0 -2px @ase_lo, inset 2px 0 @ase_hi, inset 0 2px @ase_hi,
+              inset -2px 0 @ase_lo, 0 0 0 2px @ase_ink;
+}
+row.spin spinbutton:not(.vertical) > button.image-button:active {
+  box-shadow: inset 2px 2px @ase_lo, 0 0 0 2px @ase_ink;
+}
+row.spin spinbutton:not(.vertical) > button.image-button:disabled {
+  box-shadow: 0 0 0 2px @ase_lo;
+}
+
+/* Flat round buttons (Nautilus' star column, toast close, ...) stay flat
+   until hovered instead of picking up the circular outline. */
+button.circular.flat { background-color: transparent; box-shadow: none; }
+button.circular.flat:hover { background-color: alpha(@ase_hi, 0.5); box-shadow: none; }
+button.circular.flat:active, button.circular.flat:checked {
+  color: @ase_sel_fg;
+  background-color: @ase_blue;
+  box-shadow: 0 0 0 2px @ase_ink;
+}
+button.circular.flat:disabled { background-color: transparent; box-shadow: none; }
+
+/* Sidebar rows (Nautilus' own sidebar and GtkPlacesSidebar): a gap
+   between the icon and the label. */
+.sidebar-row image.sidebar-icon:dir(ltr),
+placessidebar row image.sidebar-icon:dir(ltr) { padding-right: 8px; }
+.sidebar-row image.sidebar-icon:dir(rtl),
+placessidebar row image.sidebar-icon:dir(rtl) { padding-left: 8px; }
+.sidebar-row label.sidebar-label:dir(ltr) { padding-right: 2px; }
+.sidebar-row label.sidebar-label:dir(rtl) { padding-left: 2px; }
+button.sidebar-button { border-radius: 0; }
+
+/* Nautilus: the floating status bar (hover / selection info) is a small
+   raised panel like the status bars, not a rounded bubble. */
+.floating-bar {
+  margin: 6px;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 0;
+  color: @ase_fg;
+  background-color: @ase_panel;
+  box-shadow: inset 0 2px @ase_hi, inset 2px 0 @ase_hi, 0 0 0 2px @ase_ink;
+}
+.floating-bar button { min-width: 16px; min-height: 16px; padding: 2px; }
+#NautilusPathButton, #NautilusQueryEditorTag { border-radius: 0; }
+
+/* GNOME Calculator: history panel on the plain view colour, result line
+   set off by a black rule. */
+.display-container .history-view { background-color: @ase_base; }
+.display-container #displayitem { border-top: 2px solid @ase_ink; }
+.display-container.card { border-radius: 0; }
+
+/* Split views / sidebars */
+.sidebar-pane, navigation-split-view > .sidebar-pane, overlay-split-view > .sidebar-pane {
+  background-color: @ase_bg;
+}
+navigation-split-view > .sidebar-pane:dir(ltr), overlay-split-view > .sidebar-pane:dir(ltr) {
+  box-shadow: inset -2px 0 @ase_ink;
+}
+
+/* Nautilus path bar: drop its rounded tinted background */
+.nautilus-path-bar, .path-bar-box {
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+
+/* =========================================================================
+ * No doubled borders (same rules as gtk-3.0)
+ * ========================================================================= */
+scrolledwindow.frame.sidebar, .sidebar.frame, placessidebar, placessidebar.frame,
+stacksidebar scrolledwindow.frame {
+  border: none;
+  background-color: @ase_bg;
+}
+/* Pane dividers stay a 2px black line; a framed box right next to one
+   drops its border on that side. */
+paned.horizontal > scrolledwindow.frame:first-child { border-right-width: 0; }
+paned.horizontal > separator + scrolledwindow.frame { border-left-width: 0; }
+paned.vertical > scrolledwindow.frame:first-child { border-bottom-width: 0; }
+paned.vertical > separator + scrolledwindow.frame { border-top-width: 0; }
+
+
+/* =========================================================================
+ * No drop shadows
+ *
+ * The theme is flat pixel art: boxes get black outlines, never shadows.
+ * This also switches off the shadows libadwaita adds in some states (under
+ * a header bar once content is scrolled, at the edges of scrolled lists,
+ * beside sidebars). The window buttons keep their pixel-art shadow.
+ * ========================================================================= */
+undershoot.top, undershoot.bottom, undershoot.left, undershoot.right,
+scrolledwindow > undershoot.top, scrolledwindow > undershoot.bottom,
+scrolledwindow > undershoot.left, scrolledwindow > undershoot.right {
+  background: none;
+  box-shadow: none;
+}
+toolbarview > .top-bar.raised, toolbarview > .bottom-bar.raised,
+toolbarview > .top-bar, toolbarview > .bottom-bar,
+headerbar.raised, .raised headerbar {
+  box-shadow: none;
+}
+headerbar { box-shadow: inset 0 2px @ase_title_hi, inset 0 -2px @ase_ink; }
+headerbar:backdrop { box-shadow: inset 0 2px @ase_hi, inset 0 -2px @ase_ink; }
+notebook > header > tabs > tab:hover, tabbar tab:hover { box-shadow: none; }
+tabbar tab:hover { box-shadow: inset 0 2px @ase_hi, inset 2px 0 @ase_hi, 0 0 0 2px @ase_ink; }
+.sidebar-pane, navigation-split-view > .sidebar-pane:dir(ltr),
+overlay-split-view > .sidebar-pane:dir(ltr) { box-shadow: inset -2px 0 @ase_ink; }
+
+
+/* =========================================================================
+ * libadwaita colour variables
+ *
+ * libadwaita 1.6+ reads its colours from CSS variables; these map them to
+ * the Aseprite palette (light) and Slate (dark), so libadwaita apps match
+ * when this stylesheet is loaded for them through ~/.config/gtk-4.0 (by
+ * nwg-look or install.sh). CSS variables need GTK 4.16+; older GTK skips
+ * the @media blocks.
+ * ========================================================================= */
+@media not (prefers-color-scheme: dark) {
+  :root {
+    --accent-bg-color: #c8603a;
+    --accent-fg-color: #ffffff;
+    --accent-color: #a54a28;
+  
+    --destructive-bg-color: #e02020;
+    --destructive-fg-color: #ffffff;
+    --destructive-color: #cc0000;
+    --success-bg-color: #2e9e5e;
+    --success-fg-color: #ffffff;
+    --success-color: #1f7a45;
+    --warning-bg-color: #ff8300;
+    --warning-fg-color: #ffffff;
+    --warning-color: #b35c00;
+    --error-bg-color: #ff0000;
+    --error-fg-color: #ffffff;
+    --error-color: #cc0000;
+  
+    --window-radius: 0px;
+    --window-bg-color: #e7dcc5;
+    --window-fg-color: #000000;
+    --view-bg-color: #fffcf5;
+    --view-fg-color: #000000;
+  
+    --headerbar-bg-color: #7d929e;
+    --headerbar-fg-color: #ffffff;
+    --headerbar-border-color: #000000;
+    --headerbar-backdrop-color: #e9dfcc;
+    --headerbar-shade-color: transparent;
+    --headerbar-darker-shade-color: transparent;
+  
+    --sidebar-bg-color: #e7dcc5;
+    --sidebar-fg-color: #000000;
+    --sidebar-backdrop-color: #e7dcc5;
+    --sidebar-border-color: #000000;
+    --sidebar-shade-color: transparent;
+    --secondary-sidebar-bg-color: #e7dcc5;
+    --secondary-sidebar-fg-color: #000000;
+    --secondary-sidebar-backdrop-color: #e7dcc5;
+    --secondary-sidebar-border-color: #000000;
+    --secondary-sidebar-shade-color: transparent;
+  
+    --card-bg-color: #fffcf5;
+    --card-fg-color: #000000;
+    --card-shade-color: #000000;
+    --overview-bg-color: #e7dcc5;
+    --overview-fg-color: #000000;
+    --thumbnail-bg-color: #fffcf5;
+    --thumbnail-fg-color: #000000;
+    --active-toggle-bg-color: #7c919d;
+    --active-toggle-fg-color: #ffffff;
+  
+    --dialog-bg-color: #e7dcc5;
+    --dialog-fg-color: #000000;
+    --popover-bg-color: #e7dcc5;
+    --popover-fg-color: #000000;
+    --popover-shade-color: transparent;
+  
+    --shade-color: transparent;
+    --scrollbar-outline-color: #000000;
+    --border-color: #000000;
+    --window-radius: 0px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-bg-color: #6676d9;
+    --accent-fg-color: #ffffff;
+    --accent-color: #a9b4fa;
+
+    --destructive-bg-color: #e02020;
+    --destructive-fg-color: #ffffff;
+    --destructive-color: #ff6b6b;
+    --success-bg-color: #2e9e5e;
+    --success-fg-color: #ffffff;
+    --success-color: #5fd18f;
+    --warning-bg-color: #ff8300;
+    --warning-fg-color: #ffffff;
+    --warning-color: #ffb35c;
+    --error-bg-color: #ff0000;
+    --error-fg-color: #ffffff;
+    --error-color: #ff6b6b;
+
+    --window-radius: 0px;
+    --window-bg-color: #2c3240;
+    --window-fg-color: #e8e2d6;
+    --view-bg-color: #252a37;
+    --view-fg-color: #e8e2d6;
+
+    --headerbar-bg-color: #4d6574;
+    --headerbar-fg-color: #ffffff;
+    --headerbar-border-color: #000000;
+    --headerbar-backdrop-color: #353c4d;
+    --headerbar-shade-color: transparent;
+    --headerbar-darker-shade-color: transparent;
+
+    --sidebar-bg-color: #2c3240;
+    --sidebar-fg-color: #e8e2d6;
+    --sidebar-backdrop-color: #2c3240;
+    --sidebar-border-color: #000000;
+    --sidebar-shade-color: transparent;
+    --secondary-sidebar-bg-color: #2c3240;
+    --secondary-sidebar-fg-color: #e8e2d6;
+    --secondary-sidebar-backdrop-color: #2c3240;
+    --secondary-sidebar-border-color: #000000;
+    --secondary-sidebar-shade-color: transparent;
+
+    --card-bg-color: #252a37;
+    --card-fg-color: #e8e2d6;
+    --card-shade-color: #000000;
+    --overview-bg-color: #2c3240;
+    --overview-fg-color: #e8e2d6;
+    --thumbnail-bg-color: #252a37;
+    --thumbnail-fg-color: #e8e2d6;
+    --active-toggle-bg-color: #5d7585;
+    --active-toggle-fg-color: #ffffff;
+
+    --dialog-bg-color: #2c3240;
+    --dialog-fg-color: #e8e2d6;
+    --popover-bg-color: #2c3240;
+    --popover-fg-color: #e8e2d6;
+    --popover-shade-color: transparent;
+
+    --shade-color: transparent;
+    --scrollbar-outline-color: #000000;
+    --border-color: #000000;
+    --window-radius: 0px;
+  }
+}
+
+
+/* =========================================================================
+ * Dark mode
+ *
+ * GTK 4.16+ follows the desktop colour scheme (prefer-dark / prefer-light /
+ * default) through this media query: in dark mode the complete dark variant
+ * is loaded on top. gtk-dark.css is generated by tools/build_dark.py.
+ * GTK also loads gtk-dark.css by itself when gtk-application-prefer-dark-
+ * theme is set. Older GTK skips this block and stays light.
+ * ========================================================================= */
+@media (prefers-color-scheme: dark) {
+  @import url("gtk-dark.css");
+}

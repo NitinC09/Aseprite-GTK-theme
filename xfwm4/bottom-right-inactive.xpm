@@ -5,7 +5,7 @@ static char *dummy[]={
 "b c #000000",
 ". c #7d929e",
 "c c #958174",
-"# c #d3cbbe",
+"# c #E9DFCC",
 "a c #ffffff",
 "..########aabb",
 "..########aabb",

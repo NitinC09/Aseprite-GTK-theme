@@ -1,0 +1,140 @@
+/* =========================================================================
+ * Aseprite — libadwaita colour variables
+ *
+ * libadwaita 1.6+ takes its colours from CSS variables instead of
+ * @define-color. These map them to the Aseprite palette, so apps built
+ * with libadwaita match the rest of the theme. This also keeps them light
+ * when the desktop asks for a dark colour scheme.
+ *
+ * Needs GTK 4.16 or newer (CSS variables). It is NOT loaded by the theme
+ * itself; import it from ~/.config/gtk-4.0/gtk.css (see README or
+ * ./install.sh --libadwaita).
+ * ========================================================================= */
+:root {
+  --accent-bg-color: #ff5555;
+  --accent-fg-color: #ffffff;
+  --accent-color: #c03030;
+
+  --destructive-bg-color: #e02020;
+  --destructive-fg-color: #ffffff;
+  --destructive-color: #cc0000;
+  --success-bg-color: #2e9e5e;
+  --success-fg-color: #ffffff;
+  --success-color: #1f7a45;
+  --warning-bg-color: #ff8300;
+  --warning-fg-color: #ffffff;
+  --warning-color: #b35c00;
+  --error-bg-color: #ff0000;
+  --error-fg-color: #ffffff;
+  --error-color: #cc0000;
+
+  --window-bg-color: #d2cabd;
+  --window-fg-color: #000000;
+  --view-bg-color: #ffffff;
+  --view-fg-color: #000000;
+
+  --headerbar-bg-color: #7d929e;
+  --headerbar-fg-color: #ffffff;
+  --headerbar-border-color: #000000;
+  --headerbar-backdrop-color: #d3cbbe;
+  --headerbar-shade-color: transparent;
+  --headerbar-darker-shade-color: transparent;
+
+  --sidebar-bg-color: #d2cabd;
+  --sidebar-fg-color: #000000;
+  --sidebar-backdrop-color: #d2cabd;
+  --sidebar-border-color: #000000;
+  --sidebar-shade-color: transparent;
+  --secondary-sidebar-bg-color: #d2cabd;
+  --secondary-sidebar-fg-color: #000000;
+  --secondary-sidebar-backdrop-color: #d2cabd;
+  --secondary-sidebar-border-color: #000000;
+  --secondary-sidebar-shade-color: transparent;
+
+  --card-bg-color: #ffffff;
+  --card-fg-color: #000000;
+  --card-shade-color: #000000;
+  --overview-bg-color: #d2cabd;
+  --overview-fg-color: #000000;
+  --thumbnail-bg-color: #ffffff;
+  --thumbnail-fg-color: #000000;
+  --active-toggle-bg-color: #7c919d;
+  --active-toggle-fg-color: #ffffff;
+
+  --dialog-bg-color: #d2cabd;
+  --dialog-fg-color: #000000;
+  --popover-bg-color: #d2cabd;
+  --popover-fg-color: #000000;
+  --popover-shade-color: transparent;
+
+  --shade-color: transparent;
+  --scrollbar-outline-color: #000000;
+  --border-color: #000000;
+  --window-radius: 0px;
+}
+
+/* Dark (Slate) values, when the desktop prefers a dark colour scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-bg-color: #ff5555;
+    --accent-fg-color: #ffffff;
+    --accent-color: #ff7a7a;
+
+    --destructive-bg-color: #e02020;
+    --destructive-fg-color: #ffffff;
+    --destructive-color: #ff6b6b;
+    --success-bg-color: #2e9e5e;
+    --success-fg-color: #ffffff;
+    --success-color: #5fd18f;
+    --warning-bg-color: #ff8300;
+    --warning-fg-color: #ffffff;
+    --warning-color: #ffb35c;
+    --error-bg-color: #ff0000;
+    --error-fg-color: #ffffff;
+    --error-color: #ff6b6b;
+
+    --window-bg-color: #31353b;
+    --window-fg-color: #e8e2d6;
+    --view-bg-color: #23272c;
+    --view-fg-color: #e8e2d6;
+
+    --headerbar-bg-color: #4d6574;
+    --headerbar-fg-color: #ffffff;
+    --headerbar-border-color: #000000;
+    --headerbar-backdrop-color: #3b4047;
+    --headerbar-shade-color: transparent;
+    --headerbar-darker-shade-color: transparent;
+
+    --sidebar-bg-color: #31353b;
+    --sidebar-fg-color: #e8e2d6;
+    --sidebar-backdrop-color: #31353b;
+    --sidebar-border-color: #000000;
+    --sidebar-shade-color: transparent;
+    --secondary-sidebar-bg-color: #31353b;
+    --secondary-sidebar-fg-color: #e8e2d6;
+    --secondary-sidebar-backdrop-color: #31353b;
+    --secondary-sidebar-border-color: #000000;
+    --secondary-sidebar-shade-color: transparent;
+
+    --card-bg-color: #23272c;
+    --card-fg-color: #e8e2d6;
+    --card-shade-color: #000000;
+    --overview-bg-color: #31353b;
+    --overview-fg-color: #e8e2d6;
+    --thumbnail-bg-color: #23272c;
+    --thumbnail-fg-color: #e8e2d6;
+    --active-toggle-bg-color: #5d7585;
+    --active-toggle-fg-color: #ffffff;
+
+    --dialog-bg-color: #31353b;
+    --dialog-fg-color: #e8e2d6;
+    --popover-bg-color: #31353b;
+    --popover-fg-color: #e8e2d6;
+    --popover-shade-color: transparent;
+
+    --shade-color: transparent;
+    --scrollbar-outline-color: #000000;
+    --border-color: #000000;
+    --window-radius: 0px;
+  }
+}

@@ -3,7 +3,7 @@ static char *dummy[]={
 "8 14 4 1",
 ". c #000000",
 "b c #958174",
-"# c #d3cbbe",
+"# c #E9DFCC",
 "a c #ffffff",
 "........",
 "........",

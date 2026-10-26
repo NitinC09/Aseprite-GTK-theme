@@ -2,7 +2,7 @@
 static char *dummy[]={
 "2 34 3 1",
 ". c #000000",
-"a c #d3cbbe",
+"a c #E9DFCC",
 "# c #ffffff",
 "..",
 "..",
